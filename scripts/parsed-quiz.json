@@ -1,0 +1,665 @@
+{
+  "stringsLen": 223,
+  "TIPO_SINGLE": 10,
+  "TIPO_MULTI": 17,
+  "count": 39,
+  "questions": [
+    {
+      "r": 2,
+      "pts": 1,
+      "type": "single",
+      "text": "Un cliente requiere que se obtenga informacion asociada a proxima mejor oferta (NBO). Desea que esa informacion se visualice en el ticket, totem y en el puesto de trabajo.",
+      "options": [
+        "No es posible",
+        "Solo es posible disponibilizar la informacion en el ticket y totem",
+        "Es posible desarrollando un conector",
+        "Solo es posible si el CRM es Salesforce"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 3,
+      "pts": 2,
+      "type": "multi",
+      "text": "Indique que afirmaciones son correctas al momento de configurar un tramite.",
+      "options": [
+        "Es posible balancear salas de espera para prevenir la saturacion de una sala",
+        "Es posible indicar a que otros tramites se puede derivar y a que sucursales",
+        "Es posible especificar SLA por tramites e indicar cuales se computan en el nivel de servicio",
+        "Es posible establecer el texto que se visualizara en el ticket. Este texto es configurable por sucursal"
+      ],
+      "correct": [
+        4
+      ],
+      "ansRaw": "E"
+    },
+    {
+      "r": 4,
+      "pts": 5,
+      "type": "multi",
+      "text": "Indique cual de las siguientes afirmaciones son ciertas respecto a las capacidades de API de la plataforma.",
+      "options": [
+        "Es posible reproducir el comportamiento de un puesto de atencion utilizando APIs",
+        "Existen webhooks que se ejecutan ante la ocurrencia de eventos en turnos (encolamiento, llamado, tipificacion, etc.)",
+        "Existen APIs para el ABM de tramites y puestos de trabajo",
+        "Existen APIs para modificar el contenido de etiquetas de diseno (debsign)",
+        "Existen APIs que permiten generar entradas en turneros"
+      ],
+      "correct": [
+        5
+      ],
+      "ansRaw": "F"
+    },
+    {
+      "r": 5,
+      "pts": 5,
+      "type": "single",
+      "text": "Un cliente desea personalizar el puesto de atencion simplificando la cantidad de botones visualizados para que no sea posible Derivar turnos. Como haria esta configuracion?",
+      "options": [
+        "Desde perfil de puesto, deshabilitar el boton Derivar en la opcion Botones habilitados",
+        "Deshabilitar la opcion Derivar tramite desde el puesto de trabajo de la sucursal, debe hacerlo sucursal por sucursal",
+        "No es posible"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 6,
+      "pts": 5,
+      "type": "single",
+      "text": "Un cliente requiere atencion priorizada por tipo de cliente y por tramite. Como se configura?",
+      "options": [
+        "Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por tramite. Indicar el algoritmo \"Prioridad por tramite y cliente\" en el Perfil de puesto llamado.",
+        "Configurar prioridades desde Base de Clientes - Tipo de cliente. La solucion siempre prioriza por tramite de forma automatica.",
+        "Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por tramite. Indicar el algoritmo \"Prioridad por tramite y cliente\" a nivel compania.",
+        "Sera necesario consumir esta priorizacion desde otro sistema ya que la solucion no cuenta con esta capacidad",
+        "No es posible"
+      ],
+      "correct": [
+        0
+      ],
+      "ansRaw": "A"
+    },
+    {
+      "r": 7,
+      "pts": 5,
+      "type": "single",
+      "text": "Un cliente desea enviar recordatorios personalizados a traves de los canales SMS, Whatsapp y email. Es esto posible?",
+      "options": [
+        "Si, requiere integraciones.",
+        "Si, es el comportamiento nativo",
+        "No es posible"
+      ],
+      "correct": [
+        3
+      ],
+      "ansRaw": "D"
+    },
+    {
+      "r": 8,
+      "pts": 7,
+      "type": "multi",
+      "text": "Indique que afirmaciones sobre prioridades son correctas.",
+      "options": [
+        "Es posible establecer prioridades de los turnos generados por citas versus los turnos espontaneos",
+        "El ordenamiento por orden de llegada permite al ejecutivo decidir manualmente los turnos que son llamados, entre los que se encuentran en la sala de espera.",
+        "Existen dos tipos de algoritmos basados en envejecimiento: Por tramite y por Cliente",
+        "No es posible establecer dos tramites con las mismas prioridades",
+        "Existe una opcion llamada \"Llamado automatico\" que permite definir un intervalo de tiempo para que el sistema efectue de manera automatica el llamado de un nuevo turno"
+      ],
+      "correct": [
+        0,
+        2,
+        4
+      ],
+      "ansRaw": "A, C, E"
+    },
+    {
+      "r": 9,
+      "pts": 1,
+      "type": "single",
+      "text": "Es posible establecer puestos que solo atiendan a determinados tipos de Clientes?",
+      "options": [
+        "Si, esto se configura a nivel de perfil de puesto de trabajo",
+        "Si, esto se configura a nivel de puesto de trabajo.",
+        "No es posible"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 10,
+      "pts": 2,
+      "type": "multi",
+      "text": "Indique cual de las siguientes afirmaciones son correctas respecto a canales y contenidos.",
+      "options": [
+        "Es posible establecer vigencia para imagenes y activos.",
+        "No es posible asociar mas de un canal a una TV.",
+        "La asignacion de contenidos de un canal es solo a traves de una agenda de contenido.",
+        "En caso de perdida de conexion, el canal siempre fuerza el apagado de la TV."
+      ],
+      "correct": [
+        0
+      ],
+      "ansRaw": "A"
+    },
+    {
+      "r": 11,
+      "pts": 1,
+      "type": "single",
+      "text": "Que canales pueden ser utilizados para notificaciones?",
+      "options": [
+        "Solo email",
+        "Solo Email y SMS",
+        "Email y SMS. Whatsapp a traves de un tercero",
+        "Email, SMS, Whatsapp de forma nativa",
+        "Es posible integrarnos con cualquier canal, pero la solucion no posee canales nativos / No posee notificaciones"
+      ],
+      "correct": [
+        3
+      ],
+      "ansRaw": "D"
+    },
+    {
+      "r": 12,
+      "pts": 5,
+      "type": "single",
+      "text": "Un cliente requiere que al momento de obtener determinadas citas, se acepten terminos y condiciones.",
+      "options": [
+        "Esto es posible desarrollando una interfaz personalizada. En dicha interfaz deben consumirse APIS",
+        "Esto es un comportamiento nativo, pero aplica a todas las citas.",
+        "Esto corresponde a un comportamiento nativo de la solucion (texto cortado en captura)"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 13,
+      "pts": 10,
+      "type": "multi",
+      "text": "Indique que requerimientos son cubiertos por la solucion (con o sin integracion).",
+      "options": [
+        "Ninguna persona que asista a la sucursal puede esperar mas de 60 minutos",
+        "En el ticket de atencion tiene que aparecer los datos del cliente: nombre, apellido, Cedula y oferta de productos",
+        "Generar codigo QR para atencion presencial",
+        "Atender solicitudes a traves del canal Chat (whatsapp o web)",
+        "Que exista un puesto en atencion comercial que solo pueda llamar a los turnos de clientes VIP"
+      ],
+      "correct": [
+        5
+      ],
+      "ansRaw": "F"
+    },
+    {
+      "r": 14,
+      "pts": 5,
+      "type": "single",
+      "text": "Un cliente solicita que se envien encuestas ante la ocurrencia de la finalizacion y cuando el cliente no se presenta. Es posible esto?",
+      "options": [
+        "Es posible, solamente es posible enviar encuestas ante estos dos eventos.",
+        "Es posible, tambien es posible enviar encuestas ante una derivacion",
+        "Solo es posible enviar encuestas al finalizar una encuesta",
+        "Se pueden enviar encuestas ante cualquier evento de atencion.",
+        "Se pueden enviar encuestas ante cualquier evento de atencion sin excepcion"
+      ],
+      "correct": [
+        4
+      ],
+      "ansRaw": "E"
+    },
+    {
+      "r": 15,
+      "pts": 0,
+      "type": "single",
+      "text": "Ademas del numero de turno, que tipos de informacion pueden incluirse en un ticket impreso al cliente?",
+      "options": [
+        "Solo el numero de turno y el tramite solicitado",
+        "Datos del cliente (nombre, DNI), sala de espera, tiempo estimado, texto personalizado por tramite o tipo de cliente, QR de seguimiento, entre otros",
+        "Unicamente informacion del tramite y la sucursal",
+        "El ticket no es personalizable, siempre muestra los mismos campos"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 16,
+      "pts": 0,
+      "type": "single",
+      "text": "Cuales son los dos grandes tipos de algoritmos de priorizacion de turnos disponibles en la plataforma y en que se diferencian?",
+      "options": [
+        "Algoritmo FIFO (primero en llegar) y Algoritmo VIP (clientes prioritarios)",
+        "Algoritmo Estandar (orden serial por prioridad fija) y Algoritmo de Envejecimiento (orden dinamico segun tiempo de espera acumulado)",
+        "Algoritmo por tramite y Algoritmo por sucursal",
+        "Algoritmo manual y Algoritmo automatico"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 17,
+      "pts": 0,
+      "type": "single",
+      "text": "Para que sirve el Grupo de Desborde y en que situacion se activa automaticamente?",
+      "options": [
+        "Es un grupo de puestos de atencion de emergencia que se activa cuando hay un corte de luz",
+        "Permite que puestos secundarios atiendan tramites de una fila saturada, cuando los puestos principales estan ocupados o desconectados y dicho puesto no tiene turnos en su fila principal",
+        "Agrupa tramites de alta demanda para ser atendidos en horario extendido",
+        "Es un grupo de reserva que solo puede ser activado manualmente por el administrador"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 18,
+      "pts": 0,
+      "type": "multi",
+      "text": "Que opciones tiene un puesto de atencion para gestionar un turno cuyo cliente no se presento?",
+      "options": [
+        "Marcar el turno con el estado 'No se presento' y finalizarlo",
+        "Ausentar el turno, manteniendolo activo en una fila aparte de ausentados",
+        "Buscar al ausente y volver a llamarlo desde la fila de ausentados",
+        "Cancelar directamente el turno sin registro",
+        "Colocar el turno al final de la fila de espera activa"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "ansRaw": "A, B, C, E"
+    },
+    {
+      "r": 19,
+      "pts": 0,
+      "type": "single",
+      "text": "Es posible que un puesto de atencion derive un turno a una sucursal diferente? Bajo que condicion?",
+      "options": [
+        "No, solo es posible derivar dentro de la misma sucursal",
+        "Si, siempre es posible sin ninguna configuracion especial",
+        "Si, pero requiere que el perfil de puesto tenga habilitada la opcion 'Derivar a tramites de otra sucursal'",
+        "Solo es posible si ambas sucursales pertenecen a la misma region"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 20,
+      "pts": 0,
+      "type": "single",
+      "text": "Que son los Sub tramites y para que los puede usar un ejecutivo durante la atencion?",
+      "options": [
+        "Son tramites secundarios que el cliente puede solicitar desde el kiosco",
+        "Son etapas o variaciones de un tramite que el ejecutivo registra durante la atencion, como pasos completados o productos adquiridos",
+        "Son tramites de baja prioridad que se atienden cuando no hay otros turnos en espera",
+        "Son tramites que solo puede ejecutar el administrador de sucursal"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 21,
+      "pts": 0,
+      "type": "multi",
+      "text": "Por que canales puede un cliente obtener un turno de forma virtual sin pasar por el kiosco fisico?",
+      "options": [
+        "Desde una API externa integrada con el sistema",
+        "Desde una pagina web (mobile o desktop)",
+        "Escaneando el codigo QR impreso en su ticket presencial anterior",
+        "Desde cualquier red social de la empresa",
+        "Llamando al call center de la sucursal"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "ansRaw": "A, B"
+    },
+    {
+      "r": 22,
+      "pts": 0,
+      "type": "multi",
+      "text": "Que informacion puede visualizar un cliente al dar seguimiento a su turno virtual?",
+      "options": [
+        "El estado actual de su turno y cuantas personas hay por delante",
+        "El tiempo de espera estimado para su atencion",
+        "Si su cita fue asignada con prioridad",
+        "El nombre del ejecutivo que lo atendio",
+        "Si es el proximo en ser llamado (cuando es el unico en espera)"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "ansRaw": "A, B, C, E"
+    },
+    {
+      "r": 23,
+      "pts": 0,
+      "type": "single",
+      "text": "Para que sirve el codigo QR incluido en el ticket presencial impreso?",
+      "options": [
+        "Para pagar el servicio de atencion en linea",
+        "Para que el cliente pueda hacer seguimiento de su turno a traves de la Fila Virtual sin necesidad de recordar su codigo",
+        "Para evaluar la calidad de atencion recibida",
+        "Para redirigir al cliente al sitio web de la empresa"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 24,
+      "pts": 0,
+      "type": "single",
+      "text": "Que mensaje recibe un cliente cuando es el unico en espera para ser atendido en la Fila Virtual?",
+      "options": [
+        "Se le muestra el tiempo exacto en minutos que falta para su atencion",
+        "No se le muestra ningun tiempo estimado; en cambio se le indica que sera el proximo en ser llamado",
+        "Se le informa que la sucursal esta sin capacidad disponible",
+        "Se le solicita que confirme su asistencia a traves de un mensaje SMS"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 25,
+      "pts": 0,
+      "type": "single",
+      "text": "Que es la 'tolerancia de ingreso' en una agenda de citas y que controla exactamente?",
+      "options": [
+        "El numero maximo de citas que pueden agendarse por dia",
+        "Los minutos de diferencia con los que un cliente puede ingresar respecto al horario de su cita, y el tiempo que tiene para confirmarla",
+        "El tiempo minimo de anticipacion con el que debe sacarse una cita",
+        "El tiempo maximo que el ejecutivo puede demorar en atender al cliente con cita"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 26,
+      "pts": 0,
+      "type": "multi",
+      "text": "Que tipos de notificaciones automaticas puede recibir un cliente desde el modulo de citas?",
+      "options": [
+        "Confirmacion de la cita agendada",
+        "Recordatorio previo a la cita",
+        "Notificacion de cancelacion de la cita",
+        "Notificacion por ausencia (cliente no se presento)",
+        "Notificacion ante cancelaciones masivas que afecten su cita"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "ansRaw": "A, B, C, D, E"
+    },
+    {
+      "r": 27,
+      "pts": 0,
+      "type": "multi",
+      "text": "Que canales estan disponibles para enviar notificaciones del modulo de citas a los clientes?",
+      "options": [
+        "Email",
+        "SMS",
+        "WhatsApp",
+        "API (canal personalizado)",
+        "Notificacion push a la app nativa de Numia"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "ansRaw": "A, B, C, D"
+    },
+    {
+      "r": 28,
+      "pts": 0,
+      "type": "single",
+      "text": "Que ocurre cuando se activa la opcion 'Acepta terminos y condiciones' en un tramite?",
+      "options": [
+        "Se solicita al cliente aceptar los terminos y condiciones al momento de obtener una cita para ese tramite",
+        "Se solicita aceptacion al momento de llegar a la sucursal, antes de imprimir el ticket",
+        "Aplica a todos los tramites de la compania de forma automatica",
+        "Solo aplica cuando el cliente saca turno desde el kiosco fisico"
+      ],
+      "correct": [
+        0
+      ],
+      "ansRaw": "A"
+    },
+    {
+      "r": 29,
+      "pts": 0,
+      "type": "single",
+      "text": "Es posible que la plataforma solicite o permita al cliente subir archivos al momento de agendar una cita?",
+      "options": [
+        "No, la carga de archivos no es una funcionalidad disponible en el agendamiento",
+        "Si, y esos archivos pueden ser visualizados desde el puesto de atencion y en el calendario de citas",
+        "Si, pero solo el cliente puede verlos; el ejecutivo no tiene acceso a ellos",
+        "Solo es posible si se desarrolla una integracion personalizada con un tercero"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 30,
+      "pts": 0,
+      "type": "single",
+      "text": "Como puede habilitarse la atencion por videollamada desde un kiosco fisico?",
+      "options": [
+        "No es posible, la videollamada solo funciona desde dispositivos moviles",
+        "Activando la opcion 'Habilitar sala de atencion virtual' en la configuracion del kiosco y asignando el box que realizara la atencion",
+        "El kiosco detecta automaticamente si el tramite es virtual y lo habilita sin configuracion adicional",
+        "Solo es posible si el kiosco tiene una camara integrada certificada por Numia"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 31,
+      "pts": 0,
+      "type": "single",
+      "text": "Que sucede si un tramite esta configurado para atenderse por videollamada, pero el perfil del puesto de atencion tiene activada la opcion 'Deshabilitar videollamadas para puestos fisicos'?",
+      "options": [
+        "El turno no puede ser atendido hasta que se corrija la configuracion",
+        "La atencion se realiza de forma presencial/fisica en lugar de por videollamada",
+        "El sistema deriva automaticamente el turno a otro puesto con videollamada habilitada",
+        "El cliente recibe una notificacion indicando que la videollamada no esta disponible"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 32,
+      "pts": 0,
+      "type": "single",
+      "text": "Es posible descargar la grabacion de una videollamada? Desde donde se accede a ese recurso?",
+      "options": [
+        "No, las videollamadas no quedan grabadas por politicas de privacidad",
+        "Si, pero solo el cliente puede descargarla desde su email",
+        "Si, el link de descarga de la grabacion (y de los archivos compartidos) esta disponible en la seccion de Movimientos del sistema",
+        "Si, pero requiere solicitud formal al equipo de soporte de Numia"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 33,
+      "pts": 0,
+      "type": "single",
+      "text": "La grabacion de videollamada aplica unicamente a atenciones virtuales o tambien a atenciones presenciales realizadas por video?",
+      "options": [
+        "Solo aplica a atenciones virtuales (turno desde mobile o fila virtual)",
+        "Solo aplica a atenciones presenciales cuando el cliente esta en la sucursal",
+        "Aplica tanto a atenciones virtuales como presenciales realizadas por videollamada",
+        "La grabacion no esta disponible en ninguna modalidad de forma nativa"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 34,
+      "pts": 0,
+      "type": "multi",
+      "text": "Cuales de las siguientes son funcionalidades disponibles en el modulo de videollamada de Numia?",
+      "options": [
+        "Compartir documentos / archivos durante la llamada",
+        "Grabar la sesion de videollamada",
+        "Chat en vivo (mensajeria de texto durante la llamada)",
+        "Anadir nuevos participantes a la videollamada en curso",
+        "Cobrowsing (navegacion compartida entre ejecutivo y cliente)"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "ansRaw": "A, B"
+    },
+    {
+      "r": 35,
+      "pts": 0,
+      "type": "multi",
+      "text": "Cuales de los siguientes eventos pueden disparar el envio automatico de un mensaje al cliente en el modulo de mensajeria?",
+      "options": [
+        "Llamado del turno",
+        "Turno finalizado",
+        "Derivacion del turno",
+        "Cancelacion masiva de turnos",
+        "Turno en espera (nuevo ingreso)"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "ansRaw": "A, B, C, D, E"
+    },
+    {
+      "r": 36,
+      "pts": 0,
+      "type": "multi",
+      "text": "Por que canales puede enviarse mensajeria al cliente desde el modulo de mensajeria de Numia?",
+      "options": [
+        "Email",
+        "SMS",
+        "WhatsApp (nativo)",
+        "Notificacion push en app movil"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "ansRaw": "A, B"
+    },
+    {
+      "r": 37,
+      "pts": 0,
+      "type": "single",
+      "text": "Es posible configurar mensajes distintos segun el tramite del turno, o los mensajes aplican de forma generica para todos?",
+      "options": [
+        "Los mensajes son siempre genericos y aplican a todos los tramites sin excepcion",
+        "Si, al crear un mensaje se puede indicar a que tramites aplica; solo los turnos de esos tramites recibiran la comunicacion",
+        "Solo es posible diferenciar mensajes por sucursal, no por tramite",
+        "Se puede diferenciar por tramite pero solo si se usa el canal Email, no SMS"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 38,
+      "pts": 0,
+      "type": "single",
+      "text": "Como puede un cliente dar seguimiento a su turno a traves de la mensajeria recibida?",
+      "options": [
+        "No es posible el seguimiento desde la mensajeria, solo desde el kiosco",
+        "A traves de un link de seguimiento incluido en el SMS o email, que lo lleva a la pantalla de estado del turno",
+        "Respondiendo al SMS recibido con su numero de turno",
+        "Solo desde la app movil oficial de Numia"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    },
+    {
+      "r": 39,
+      "pts": 0,
+      "type": "single",
+      "text": "Una pantalla de turnero en una sucursal, cuantos turneros puede mostrar simultaneamente como maximo?",
+      "options": [
+        "Solo 1 turnero por pantalla, para no generar confusion visual al cliente",
+        "2 turneros: uno para citas y otro para turnos espontaneos",
+        "Hasta 4 turneros simultaneos, cada uno configurable con tramites especificos",
+        "Ilimitados, la cantidad depende unicamente de la resolucion de la pantalla",
+        "3 turneros, uno por cada sala de espera disponible en la sucursal"
+      ],
+      "correct": [
+        2
+      ],
+      "ansRaw": "C"
+    },
+    {
+      "r": 40,
+      "pts": 0,
+      "type": "single",
+      "text": "Que permite la funcion 'Publicidad segun tipo de cliente' en las pantallas de la sucursal?",
+      "options": [
+        "Mostrar publicidad personalizada en el telefono de cada cliente cuando ingresa a la sucursal via Bluetooth",
+        "Cambiar automaticamente el contenido en pantalla cuando el porcentaje de clientes de cierto tipo en la sucursal supera un umbral definido",
+        "Deshabilitar toda publicidad cuando hay clientes VIP en espera para no distraerlos",
+        "Mostrar el nombre del cliente en la pantalla cuando su turno es llamado",
+        "Enviar publicidad por SMS al cliente segun su tipo mientras espera en la sucursal"
+      ],
+      "correct": [
+        1
+      ],
+      "ansRaw": "B"
+    }
+  ]
+}

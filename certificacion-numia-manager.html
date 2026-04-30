@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificación Partners — Numia Manager</title>
+<link rel="icon" href="img/N.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #060A27;
+    --purple: #863DFF;
+    --grey: #9593A1;
+    --turquoise: #7BE1C9;
+    --lavender: #CAC6FF;
+    --lilac: #DDE0FF;
+    --neon: #CBFF2E;
+    --white: #FFFFFF;
+    --border: #E2E2EC;
+    --bg: #F5F5FA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hanken Grotesk', Arial, sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
+
+  header { background: var(--black); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 24px rgba(6,10,39,0.2); }
+  .header-inner { max-width: 900px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; }
+  .brand-logo { display: block; height: 28px; width: auto; }
+  header .brand-logo { filter: brightness(0) invert(1); opacity: 0.92; }
+  .email-gate-card .brand-logo { height: 32px; filter: none; opacity: 1; }
+  .header-welcome {
+    display: none;
+    align-items: center;
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--grey);
+    letter-spacing: -0.01em;
+  }
+  .header-welcome .header-welcome-line { color: var(--white); font-weight: 600; }
+  .header-exam-stats { display: flex; align-items: center; gap: 18px 22px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
+  .header-timer {
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--turquoise);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    min-width: 5ch;
+  }
+  .header-timer--warn {
+    color: #FFB020;
+    text-shadow: 0 0 14px rgba(255, 149, 51, 0.45);
+  }
+  .progress-text { font-size: 13px; color: var(--grey); }
+  .progress-text span { color: var(--white); font-weight: 600; }
+  .progress-bar-wrap { height: 3px; background: rgba(255,255,255,0.08); }
+  .progress-bar-fill { height: 100%; background: var(--purple); transition: width 0.3s; width: 0%; }
+
+  #exam-modal-start { z-index: 20000; }
+  #exam-modal-5min { z-index: 20001; }
+  #exam-modal-timeup { z-index: 20002; }
+  #exam-modal-unanswered { z-index: 20003; }
+  .exam-modal-root {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  .exam-modal-root.is-open { display: flex; }
+  .exam-modal-root--opaque { background: var(--black); }
+  .exam-modal-root--soft {
+    background: rgba(6, 10, 39, 0.88);
+    backdrop-filter: blur(6px);
+  }
+  .exam-modal-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--white);
+    border-radius: 18px;
+    padding: 28px 26px 26px;
+    box-shadow: 0 24px 80px rgba(6, 10, 39, 0.45);
+    border: 1px solid rgba(134, 61, 255, 0.2);
+  }
+  .exam-modal-card--compact { max-width: 360px; padding: 22px 22px 20px; text-align: center; }
+  .exam-modal-card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 12px;
+    letter-spacing: -0.3px;
+  }
+  .exam-modal-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #4A4A5C;
+    margin: 0 0 18px;
+  }
+  .exam-modal-card .btn-submit { width: 100%; margin-top: 4px; }
+  .exam-modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .exam-modal-actions .btn-submit { margin-top: 0; }
+  .btn-modal-secondary {
+    width: 100%;
+    font-family: 'Hanken Grotesk', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 2px solid #D4D2E8;
+    background: var(--white);
+    color: var(--black);
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, color 0.18s;
+  }
+  .btn-modal-secondary:hover { border-color: var(--purple); background: #F8F6FF; color: var(--purple); }
+  .exam-modal-card--compact p { margin-bottom: 16px; font-size: 15px; color: var(--black); font-weight: 600; }
+  .exam-modal-lead { font-size: 15px !important; font-weight: 600 !important; color: var(--black) !important; }
+
+  .intro-time-callout {
+    max-width: 640px;
+    margin: 0 auto 28px;
+    padding: 18px 20px 18px 22px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(123, 225, 201, 0.35);
+    border-left: 4px solid var(--turquoise);
+    text-align: left;
+  }
+  .intro-time-callout-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--turquoise);
+    margin-bottom: 8px;
+  }
+  .intro-time-callout p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #D4D2E0;
+  }
+  .intro-time-callout p + p { margin-top: 12px; }
+  .hero-intro .intro-time-callout { margin: 28px auto 26px; }
+  .intro-time-callout strong { color: var(--white); font-weight: 600; }
+
+  /* Altura bajo el header (~56px + 3px barra cuando el cuestionario está activo) */
+  #exam-screen { min-height: calc(100vh - 59px); display: flex; flex-direction: column; background: var(--bg); }
+  #exam-intro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(134,61,255,0.22) 0%, transparent 55%), var(--black);
+    min-height: calc(100vh - 59px);
+  }
+  .hero { background: var(--black); padding: 48px 24px 40px; text-align: center; border-bottom: 3px solid var(--purple); }
+  .hero.hero-intro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    padding: 40px 24px 48px;
+    border-bottom: none;
+    background: transparent;
+  }
+  .intro-shell { width: 100%; max-width: 880px; margin: 0 auto; }
+  .hero-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--turquoise); margin-bottom: 12px; }
+  .hero-title { font-size: 36px; font-weight: 700; color: var(--white); letter-spacing: -1px; margin-bottom: 8px; }
+  .hero-title span { color: var(--purple); }
+  .hero-title-intro { font-size: clamp(32px, 5vw, 44px); margin-bottom: 22px; }
+  .hero-sub { font-size: 14px; color: var(--grey); max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
+  .hero-sub-intro { max-width: 640px; font-size: 15px; line-height: 1.65; margin-bottom: 32px; color: #B8B6C9; }
+  .intro-highlights {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 0 auto 32px;
+    padding: 0;
+    max-width: 820px;
+    width: 100%;
+  }
+  @media (max-width: 720px) {
+    .intro-highlights { grid-template-columns: 1fr; max-width: 400px; }
+  }
+  .intro-hl {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 16px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+  }
+  .intro-hl .intro-hl-title { color: var(--white); font-size: 14px; font-weight: 700; line-height: 1.35; margin: 0; }
+  .stats-bar { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); }
+  .hero-intro .stats-bar.intro-stats { max-width: 720px; gap: 10px; border: none; background: transparent; }
+  .hero-intro .stats-bar.intro-stats .stat-item {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 22px 18px 20px;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--neon); display: block; line-height: 1; margin-bottom: 4px; }
+  .hero-intro .stat-num { font-size: clamp(26px, 4vw, 36px); }
+  .stat-lbl { font-size: 11px; color: var(--grey); }
+  .hero-intro .stat-lbl { font-size: 12px; line-height: 1.35; }
+
+  .intro-cta { margin-top: 36px; padding-top: 12px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .intro-check { font-size: 15px; color: #D4D2E0; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+  .intro-check input { width: 20px; height: 20px; accent-color: var(--purple); flex-shrink: 0; }
+  .intro-continue-btn { min-width: 240px; padding: 14px 36px; font-size: 15px; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 36px 24px 100px; }
+
+  .q-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 24px 28px; margin-bottom: 14px; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
+  .q-card.answered { border-color: var(--lavender); }
+  .q-card.q-pending-answer {
+    border-color: rgba(239, 159, 39, 0.75);
+    background: linear-gradient(180deg, #FFFCF7 0%, var(--white) 100%);
+    box-shadow: 0 0 0 1px rgba(239, 159, 39, 0.35), 0 10px 32px rgba(239, 159, 39, 0.12);
+  }
+
+  .q-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .q-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .q-num-badge { font-size: 11px; font-weight: 700; background: var(--lilac); color: var(--purple); padding: 3px 10px; border-radius: 20px; }
+  .q-type-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .badge-multi { background: #EDE8FF; color: #5B1FCC; }
+  .badge-single { background: #DEFAF3; color: #0A6B52; }
+  .q-pts-badge { font-size: 12px; font-weight: 700; color: var(--grey); white-space: nowrap; }
+  .q-text { font-size: 15px; font-weight: 600; color: var(--black); line-height: 1.5; margin-bottom: 16px; }
+
+  .options-list { display: flex; flex-direction: column; gap: 8px; }
+  .option-label { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-radius: 10px; background: #F7F7FB; border: 1.5px solid #E8E8F0; cursor: pointer; transition: border-color 0.15s, background 0.15s; user-select: none; }
+  .option-label:hover { border-color: var(--lavender); background: #F0EEFF; }
+  .option-label.selected { border-color: var(--purple); background: #F5F0FF; }
+
+  .custom-input { flex-shrink: 0; width: 18px; height: 18px; border: 2px solid #C0C0D0; background: var(--white); margin-top: 2px; display: flex; align-items: center; justify-content: center; position: relative; transition: border-color 0.15s, background 0.15s; }
+  .custom-radio { border-radius: 50%; }
+  .custom-checkbox { border-radius: 4px; }
+  .option-label.selected .custom-input { border-color: var(--purple); background: var(--purple); }
+  .option-label.selected .custom-radio::after { content:''; width:6px; height:6px; background:white; border-radius:50%; position:absolute; }
+  .option-label.selected .custom-checkbox::after { content:'✓'; font-size:11px; color:white; line-height:1; }
+
+  .option-text { font-size: 13px; color: var(--black); line-height: 1.5; flex: 1; }
+
+  .submit-reveal-sentinel {
+    height: 8px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .submit-zone {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 50;
+    box-shadow: 0 -4px 24px rgba(6,10,39,0.08);
+    transform: translateY(calc(100% + 12px));
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .submit-zone.submit-zone--visible {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .submit-info { font-size: 13px; color: var(--grey); }
+  .submit-info span { color: var(--black); font-weight: 700; }
+  .btn-submit { background: var(--purple); color: var(--white); font-family: 'Hanken Grotesk', Arial, sans-serif; font-size: 14px; font-weight: 700; padding: 12px 32px; border-radius: 10px; border: none; cursor: pointer; transition: opacity 0.15s, transform 0.1s; letter-spacing: 0.3px; }
+  .btn-submit:hover { opacity: 0.88; }
+  .btn-submit:active { transform: scale(0.98); }
+
+  footer { background: var(--black); text-align: center; padding: 20px 24px; font-size: 12px; color: var(--grey); }
+  footer strong { color: var(--white); }
+
+  .email-gate-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 20px; background: var(--black); border-bottom: 3px solid var(--purple); }
+  .email-gate-card { max-width: 480px; width: 100%; background: var(--white); border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 60px rgba(6,10,39,0.35); }
+  .email-gate-card .gate-logo { display: flex; align-items: center; margin-bottom: 12px; }
+  .email-gate-card h1 { font-size: 22px; font-weight: 700; color: var(--black); margin-bottom: 8px; letter-spacing: -0.3px; }
+  .email-gate-card label { display: block; font-size: 12px; font-weight: 600; color: var(--black); margin-bottom: 6px; }
+  .email-gate-card input[type=email],
+  .email-gate-card input[type=text],
+  .email-gate-card input[type=tel] { width: 100%; font-family: 'Hanken Grotesk', Arial, sans-serif; font-size: 15px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
+  .email-gate-card input:focus { outline: none; border-color: var(--purple); }
+  .email-gate-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-bottom: 2px; }
+  @media(max-width:520px){ .email-gate-row { grid-template-columns: 1fr; } }
+  .email-gate-card .field-err { font-size: 12px; color: #C73E3E; margin-bottom: 12px; min-height: 1.2em; }
+  .email-gate-card .btn-gate { width: 100%; }
+
+  @media(max-width:640px){
+    .hero-title { font-size: 26px; }
+    .q-card { padding: 16px 16px; }
+    .submit-zone { flex-direction: column; gap: 8px; align-items: stretch; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="email-gate" class="email-gate-screen">
+  <div class="email-gate-card">
+    <div class="gate-logo"><img class="brand-logo" src="img/numia.png" alt="Numia" width="132" height="40" decoding="async" /></div>
+    <h1>Certificación <span style="color:var(--purple)">Numia Manager</span></h1>
+    <div class="email-gate-row">
+      <div>
+        <label for="user-nombre">Nombre</label>
+        <input type="text" id="user-nombre" name="user-nombre" autocomplete="given-name" placeholder="Nombre" maxlength="80" />
+      </div>
+      <div>
+        <label for="user-apellido">Apellido</label>
+        <input type="text" id="user-apellido" name="user-apellido" autocomplete="family-name" placeholder="Apellido" maxlength="80" />
+      </div>
+    </div>
+    <label for="user-email">Email</label>
+    <input type="email" id="user-email" name="user-email" autocomplete="email" placeholder="nombre@empresa.com" inputmode="email" />
+    <label for="user-cel">Celular empresarial</label>
+    <input type="tel" id="user-cel" name="user-cel" autocomplete="tel" placeholder="+525610238726" inputmode="tel" maxlength="32" />
+    <p class="field-err" id="gate-err" aria-live="polite"></p>
+    <button type="button" class="btn-submit btn-gate" id="btn-start-exam" onclick="startWithEmail()">Ingresar</button>
+  </div>
+</div>
+
+<header id="exam-header" style="display:none">
+  <div class="header-inner">
+    <div class="logo"><img class="brand-logo" src="img/numia.png" alt="Numia" width="118" height="36" decoding="async" /></div>
+    <div id="header-welcome" class="header-welcome" style="display:none" aria-hidden="true">
+      <span class="header-welcome-line" id="header-welcome-line">Bienvenido</span>
+    </div>
+    <div id="header-exam-stats" class="header-exam-stats" style="display:none" aria-hidden="true">
+      <span class="header-timer" id="header-timer">30:00</span>
+      <span class="progress-text">Respondidas: <span id="answered-count">0</span> / <span id="q-total">51</span></span>
+    </div>
+  </div>
+  <div id="header-progress-bar-wrap" class="progress-bar-wrap" style="display:none"><div class="progress-bar-fill" id="progress-bar"></div></div>
+</header>
+
+<div id="exam-screen" style="display:none">
+  <div id="exam-intro">
+    <div class="hero hero-intro">
+      <div class="intro-shell">
+        <p class="hero-label">Examen de certificación</p>
+        <h1 class="hero-title hero-title-intro">Numia <span>Manager</span></h1>
+        <ul class="intro-highlights">
+          <li class="intro-hl"><p class="intro-hl-title">30 minutos para completar la evaluación</p></li>
+          <li class="intro-hl"><p class="intro-hl-title">Evaluación autocalificada</p></li>
+          <li class="intro-hl"><p class="intro-hl-title">Reporte PDF</p></li>
+        </ul>
+        <div class="stats-bar intro-stats" id="exam-stats">
+          <div class="stat-item"><span class="stat-num" id="stat-questions">51</span><span class="stat-lbl">Preguntas totales</span></div>
+          <div class="stat-item"><span class="stat-num" id="stat-approve-pct" style="font-size:clamp(22px,3.5vw,32px)">75&nbsp;%</span><span class="stat-lbl">Porcentaje para aprobar</span></div>
+          <div class="stat-item"><span class="stat-num" id="stat-q-min">39</span><span class="stat-lbl">Aciertos mínimos</span></div>
+        </div>
+        <div class="intro-time-callout" role="note">
+          <span class="intro-time-callout-label">Instrucciones</span>
+          <p>Hay <strong id="hero-q-total" style="color:var(--white)">51</strong> preguntas en total. Para aprobar necesitas responder bien al menos <strong id="hero-q-min" style="color:var(--turquoise)">39</strong> preguntas (75&nbsp;% del total). Selecciona las respuestas y presiona <strong style="color:var(--white)">Enviar evaluación</strong> al terminar.</p>
+          <p>Tienes <strong>30 minutos</strong> en pantalla para resolver el cuestionario. Si el temporizador llega a <strong>0:00</strong> antes de que envíes, el intento se cierra solo y <strong>solo se contabilizan las preguntas que ya hayas respondido</strong>; el resto queda sin puntaje.</p>
+        </div>
+        <div class="intro-cta">
+          <label class="intro-check"><input type="checkbox" id="intro-read-cb" autocomplete="off" /> Leí las instrucciones</label>
+          <button type="button" class="btn-submit intro-continue-btn" id="btn-exam-continue">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="exam-questions-wrap" style="display:none">
+    <main id="q-container"></main>
+    <div id="submit-reveal-sentinel" class="submit-reveal-sentinel" aria-hidden="true"></div>
+    <div class="submit-zone">
+      <div class="submit-info">Has respondido <span id="submit-count">0</span> de <span id="submit-total">51</span> preguntas</div>
+      <button class="btn-submit" onclick="submitExam()">Enviar evaluación →</button>
+    </div>
+  </div>
+</div>
+
+<div id="exam-modal-start" class="exam-modal-root exam-modal-root--opaque" role="dialog" aria-modal="true" aria-labelledby="exam-modal-start-title" aria-hidden="true">
+  <div class="exam-modal-card">
+    <h2 id="exam-modal-start-title">Comienza el tiempo</h2>
+    <p class="exam-modal-lead">Al continuar, comenzará la cuenta regresiva para terminar la evaluación.</p>
+    <p>El temporizador y el contador de preguntas respondidas quedarán visibles arriba durante todo el examen.</p>
+    <button type="button" class="btn-submit" id="btn-exam-modal-start">Continuar</button>
+  </div>
+</div>
+
+<div id="exam-modal-5min" class="exam-modal-root exam-modal-root--soft" role="dialog" aria-modal="true" aria-labelledby="exam-modal-5min-title" aria-hidden="true">
+  <div class="exam-modal-card exam-modal-card--compact">
+    <p id="exam-modal-5min-title">Quedan 5 minutos</p>
+    <p style="font-size:13px;font-weight:400;color:#5C5C6E;margin-top:-8px;margin-bottom:16px;">El contador ya está resaltado. Revisa lo pendiente y envía cuando estés listo.</p>
+    <button type="button" class="btn-submit" id="btn-exam-modal-5min">Aceptar</button>
+  </div>
+</div>
+
+<div id="exam-modal-timeup" class="exam-modal-root exam-modal-root--opaque" role="dialog" aria-modal="true" aria-labelledby="exam-modal-timeup-title" aria-hidden="true">
+  <div class="exam-modal-card">
+    <h2 id="exam-modal-timeup-title">Se acabó el tiempo</h2>
+    <p class="exam-modal-lead">El temporizador llegó a <strong>0:00</strong>.</p>
+    <p>Se enviarán las respuestas que registraste hasta este momento; las preguntas sin marcar no suman puntaje. Pulsa <strong>Continuar</strong> para cerrar el intento y ver el resultado.</p>
+    <button type="button" class="btn-submit" id="btn-exam-modal-timeup">Continuar</button>
+  </div>
+</div>
+
+<div id="exam-modal-unanswered" class="exam-modal-root exam-modal-root--soft" role="dialog" aria-modal="true" aria-labelledby="exam-modal-unanswered-title" aria-hidden="true">
+  <div class="exam-modal-card">
+    <h2 id="exam-modal-unanswered-title">Preguntas sin responder</h2>
+    <p class="exam-modal-lead">Tienes <strong id="modal-unanswered-count">0</strong> <span id="modal-unanswered-noun">preguntas</span> sin responder.</p>
+    <p>Puedes enviar el intento así o volver al cuestionario para completar lo que falta.</p>
+    <div class="exam-modal-actions">
+      <button type="button" class="btn-modal-secondary" id="btn-unanswered-back">Volver y completar</button>
+      <button type="button" class="btn-submit" id="btn-unanswered-submit">Enviar evaluación</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { n:1, pts:5, type:'multi',
+    text:'Impresión de ticket. Indique cuál de las siguientes afirmaciones son correctas.',
+    options:[
+      'Es posible imprimir QR de seguimiento sin requerir fila virtual',
+      'Es posible imprimir tiempos exactos de espera',
+      'Es posible imprimir información obtenida desde otro sistema',
+      'Es posible indicar cuántas personas hay en espera antes del turno',
+    ] },
+
+  { n:2, pts:5, type:'single',
+    text:'Un cliente desea personalizar el puesto de atención simplificando la cantidad de botones visualizados para que no sea posible derivar turnos. ¿Cómo haría esta configuración?',
+    options:[
+      'Desde perfil de puesto, deshabilitar el botón Derivar, en la opción Botones habilitados',
+      'Deshabilitar la opción Derivar trámite desde el puesto de trabajo de la sucursal, debe hacerlo sucursal por sucursal',
+      'No es posible',
+    ] },
+
+  { n:3, pts:1, type:'single',
+    text:'Un cliente requiere que se obtenga información asociada a próxima mejor oferta (NBO). Desea que esa información se visualice en el ticket, tótem y en el puesto de trabajo.',
+    options:[
+      'No es posible',
+      'Sólo es posible disponibilizar la información en el ticket y totem',
+      'Es posible desarrollando un conector',
+      'Sólo es posible si el CRM es Salesforce',
+    ] },
+
+  { n:4, pts:5, type:'multi',
+    text:'Un cliente desea implementar perfiles de puestos que sólo se encuentren disponibles en una sucursal piloto. ¿Cómo implementaría esto?',
+    options:[
+      'Generando el perfil de puesto y asignándolo sólo a esa sucursal',
+      'Generando un perfil de puesto sólo en esa sucursal',
+      'No es posible hacerlo',
+    ] },
+
+  { n:5, pts:5, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son ciertas sobre el módulo de Cartelería digital.',
+    options:[
+      'Posee un widget Carrusel de texto conformado por un grupo de palabras u oraciones pasantes que se muestran continuamente',
+      'Posee un widget de multimedia que permite combinar videos e imágenes',
+      'Es posible embeber páginas URL',
+      'Existe un widget que permite consumir APIs y disponibilizar el contenido brindándole formato HTML',
+      'Existe un widget que permite establecer una videollamada desde un tótem',
+    ] },
+
+  { n:6, pts:7, type:'multi',
+    text:'Indique qué afirmaciones sobre prioridades son correctas.',
+    options:[
+      'Es posible establecer prioridades de los turnos generados por citas versus los turnos espontáneos',
+      'El ordenamiento por orden de llegada permite al ejecutivo decidir manualmente los turnos que son llamados, entre los que se encuentran en la sala de espera',
+      'Existen dos tipos de algoritmos basados en envejecimiento: Por trámite y por Cliente',
+      'No es posible establecer dos trámites con las mismas prioridades',
+      'Existe una opción llamada "Llamado automático" que permite definir un intervalo de tiempo para que el sistema efectúe de manera automática el llamado de un nuevo turno',
+    ] },
+
+  { n:7, pts:1, type:'single',
+    text:'¿Es posible establecer puestos que sólo atiendan a determinados tipos de Clientes?',
+    options:[
+      'Sí, esto se configura a nivel de perfil de puesto de trabajo',
+      'Sí, esto se configura a nivel de puesto de trabajo',
+      'No es posible',
+    ] },
+
+  { n:8, pts:1, type:'single',
+    text:'¿Es posible manejar numeración por tipo de trámite?',
+    options:[
+      'Sí, se pueden establecer numeraciones para citas y numeraciones para filas',
+      'Sí, es único para filas y citas',
+      'Es único por sucursal',
+    ] },
+
+  { n:9, pts:5, type:'single',
+    text:'Un cliente requiere que al momento de obtener determinadas citas, se acepten términos y condiciones.',
+    options:[
+      'Esto es posible desarrollando una interfaz personalizada. En dicha interfaz deben consumirse APIs',
+      'Esto es un comportamiento nativo, pero aplica a todas las citas',
+      'Esto corresponde a un comportamiento nativo de la solución',
+    ] },
+
+  { n:10, pts:10, type:'multi',
+    text:'Indique qué requerimientos son cubiertos por la solución (con o sin integración).',
+    options:[
+      'Ninguna persona que asista a la sucursal puede esperar más de 60 minutos',
+      'En el ticket de atención tiene que aparecer los datos del cliente: nombre, apellido, cédula y oferta de productos',
+      'Generar código QR para atención presencial',
+      'Atender solicitudes a través del canal Chat (WhatsApp o web)',
+      'Que exista un puesto en atención comercial que sólo pueda llamar a los turnos de clientes VIP',
+    ] },
+
+  { n:11, pts:5, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son ciertas sobre APIs y webhooks.',
+    options:[
+      'Es posible reproducir el comportamiento de un puesto de atención utilizando APIs',
+      'Existen webhooks que se ejecutan ante la ocurrencia de eventos en turnos (encolamiento, llamado, tipificación, etc.)',
+      'Existen APIs para el ABM de trámites y puestos de trabajo',
+      'Existen APIs para modificar el contenido de etiquetas de diseño',
+      'Existen APIs que permiten generar entradas en turneros',
+    ] },
+
+  { n:12, pts:5, type:'single',
+    text:'¿La solución permite integración con sistemas de accesos centralizados como Active Directory mediante el protocolo LDAP?',
+    options:[
+      'Es posible tanto por perfil de acceso como por sucursal',
+      'Sí, sólo es posible hacerlo por sucursal',
+      'Sí, sólo es posible por perfil de acceso',
+      'Sólo es posible por perfil de puesto',
+      'No es posible',
+    ] },
+
+  { n:13, pts:7, type:'multi',
+    text:'Indique cuáles de las siguientes capacidades están incluidas dentro de Numia Manager.',
+    options:[
+      'La plataforma permite realizar derivaciones a otras sucursales desde el puesto de trabajo',
+      'Buscar turnos ausentes dentro de un puesto',
+      'Registrar mensajes internos antes de derivar un ticket',
+      'Cancelar un llamado realizado',
+      'Seguimiento histórico de los tipificados por parte de los ejecutivos',
+    ] },
+
+  { n:14, pts:1, type:'single',
+    text:'¿La solución posee integración nativa con videollamada?',
+    options:[
+      'Sí, solo Vonage',
+      'Sí, Vonage, Zoom, AWS y Teams',
+      'Sí, cualquier proveedor',
+      'Zoom y teams',
+    ] },
+
+  { n:15, pts:1, type:'single',
+    text:'¿Qué canales pueden ser utilizados para notificaciones?',
+    options:[
+      'Sólo email',
+      'Sólo email y SMS',
+      'Email y SMS. WhatsApp a través de un tercero',
+      'Email, SMS, WhatsApp de forma nativa',
+      'Es posible integrarnos con cualquier canal, pero la solución no posee canales nativos',
+      'No posee notificaciones',
+    ] },
+
+  { n:16, pts:5, type:'single',
+    text:'Un cliente requiere poder encolar turnos a través de APIs.',
+    options:[
+      'Es posible sólo si posee fila virtual',
+      'Se requiere un conector',
+      'Existen APIs dentro de Numia Manager, no se requieren módulos adicionales',
+    ] },
+
+  { n:17, pts:5, type:'single',
+    text:'Un cliente requiere atención priorizada por tipo de Cliente, priorizando a la persona por sobre lo que necesita hacer.',
+    options:[
+      'Será necesario consumir esta priorización desde otro sistema ya que la solución no cuenta con esta capacidad',
+      'Debemos configurar las prioridades desde Base de Clientes - Tipo de Clientes. Es posible hacerlo a partir de cualquier dato del Cliente desde la opción Base de Clientes - Datos de priorización y luego indicar este algoritmo en el Perfil de puesto',
+      'Debemos configurar las prioridades desde Base de Clientes - Tipo de cliente y luego indicar este algoritmo de priorización en el Perfil de puesto',
+      'Debemos configurar las prioridades desde Base de Clientes - Tipo de cliente y luego indicar este algoritmo en el Puesto de cada sucursal',
+      'No es posible',
+    ] },
+
+  { n:18, pts:2, type:'multi',
+    text:'Indique qué afirmaciones son correctas sobre la configuración de trámites.',
+    options:[
+      'Al momento de configurar un trámite, es posible balancear salas de espera para prevenir la saturación de una sala',
+      'Al momento de configurar un trámite es posible indicar a qué otros trámites se puede derivar y a qué sucursales',
+      'Es posible especificar SLA por trámites e indicar cuáles se computan en el nivel de servicio',
+      'Es posible establecer el texto que se visualizará en el ticket. Este texto es configurable por sucursal',
+    ] },
+
+  { n:19, pts:5, type:'single',
+    text:'Se requiere que los puestos de atención no pasen más de 45 minutos sin actividad cuando se encuentran en estado Almuerzo.',
+    options:[
+      'Esta configuración se realiza desde Avanzado - configuración de compañía - Estados del puesto',
+      'Esta funcionalidad sólo es posible a través del consumo de API',
+      'Esta configuración se realiza desde Avanzado - Tareas. Se debe planificar con qué frecuencia debe ejecutarse esta tarea',
+      'Esta configuración se realiza desde Panel de compañía - Perfiles de puesto base - Tiempo máximo inactivo',
+      'No es posible',
+    ] },
+
+  { n:20, pts:2, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones sobre videollamadas NO son ciertas.',
+    options:[
+      'La utilización de videollamadas propuesta por Numia requiere descargar una aplicación',
+      'Es posible iniciar videollamadas desde un tótem',
+      'No es posible deshabilitar el chat durante videollamada',
+      'No es posible intercambiar archivos adjuntos',
+    ] },
+
+  { n:21, pts:2, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son correctas sobre Cartelería digital.',
+    options:[
+      'Es posible establecer vigencia para imágenes y activos',
+      'No es posible asociar más de un canal a una TV',
+      'La asignación de contenidos de un canal es sólo a través de una agenda de contenido',
+      'En caso de pérdida de conexión, el canal siempre fuerza el apagado de la TV',
+    ] },
+
+  { n:22, pts:5, type:'single',
+    text:'Un cliente solicita que se envíen encuestas ante la finalización y cuando el cliente no se presenta. ¿Es posible esto?',
+    options:[
+      'Es posible, solamente es posible enviar encuestas ante estos dos eventos',
+      'Es posible, también es posible enviar encuestas ante una derivación',
+      'Sólo es posible enviar encuestas al finalizar una atención',
+      'Se pueden enviar encuestas ante cualquier evento de atención',
+    ] },
+
+  { n:23, pts:5, type:'single',
+    text:'Un cliente desea enviar recordatorios personalizados a través de los canales SMS, WhatsApp y email. ¿Es esto posible?',
+    options:[
+      'Sí, requiere integraciones',
+      'Sí, es el comportamiento nativo',
+      'No es posible',
+    ] },
+
+  { n:24, pts:4, type:'multi',
+    text:'Numia ofrece funcionalidades de Speech Analytics. Indique qué afirmaciones son correctas.',
+    options:[
+      'Está disponible sólo para atención virtual',
+      'Está disponible para virtual, presencial y Chat',
+      'Es posible hacerlo analizando videos o textos grabados por fuera de Numia',
+      'Está disponible para todos los clientes de Numia',
+    ] },
+
+  { n:25, pts:5, type:'single',
+    text:'Un cliente requiere atención priorizada por tipo de cliente y por trámite. ¿Cómo se configura?',
+    options:[
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por trámite. Indicar el algoritmo "Prioridad por trámite y cliente" en el Perfil de puesto llamado.',
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente. La solución siempre prioriza por trámite de forma automática.',
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por trámite. Indicar el algoritmo "Prioridad por trámite y cliente" a nivel compañía.',
+      'Será necesario consumir esta priorización desde otro sistema ya que la solución no cuenta con esta capacidad',
+      'No es posible',
+    ] },
+
+  { n:26, pts:2, type:'single',
+    text:'Además del número de turno, ¿qué tipos de información pueden incluirse en un ticket impreso al cliente?',
+    options:[
+      'Sólo el número de turno y el trámite solicitado',
+      'Datos del cliente (nombre, DNI), sala de espera, tiempo estimado, texto personalizado por trámite o tipo de cliente, QR de seguimiento, entre otros',
+      'Únicamente información del trámite y la sucursal',
+      'El ticket no es personalizable, siempre muestra los mismos campos',
+    ] },
+
+  { n:27, pts:2, type:'single',
+    text:'Cuáles son los dos grandes tipos de algoritmos de priorización de turnos disponibles en la plataforma? ¿En qué se diferencian?',
+    options:[
+      'Algoritmo FIFO (primero en llegar) y Algoritmo VIP (clientes prioritarios)',
+      'Algoritmo Estándar (orden serial por prioridad fija) y Algoritmo de Envejecimiento (orden dinámico según tiempo de espera acumulado)',
+      'Algoritmo por trámite y Algoritmo por sucursal',
+      'Algoritmo manual y Algoritmo automático',
+    ] },
+
+  { n:28, pts:2, type:'single',
+    text:'¿Para qué sirve el Grupo de Desborde y en qué situación se activa automáticamente?',
+    options:[
+      'Es un grupo de puestos de atencion de emergencia que se activa cuando hay un corte de luz',
+      'Permite que puestos secundarios atiendan trámites de una fila saturada, cuando los puestos principales estan ocupados o desconectados y dicho puesto no tiene turnos en su fila principal',
+      'Agrupa trámites de alta demanda para ser atendidos en horario extendido',
+      'Es un grupo de reserva que sólo puede ser activado manualmente por el administrador',
+    ] },
+
+  { n:29, pts:4, type:'multi',
+    text:'¿Qué opciones tiene un puesto de atencion para gestionar un turno cuyo cliente no se presentó?',
+    options:[
+      'Marcar el turno con el estado \'No se presento\' y finalizarlo',
+      'Ausentar el turno, manteniendolo activo en una fila aparte de ausentados',
+      'Buscar al ausente y volver a llamarlo desde la fila de ausentados',
+      'Cancelar directamente el turno sin registro',
+      'Colocar el turno al final de la fila de espera activa',
+    ] },
+
+  { n:30, pts:2, type:'single',
+    text:'Es posible que un puesto de atencion derive un turno a una sucursal diferente? ¿Bajo qué condición?',
+    options:[
+      'No, sólo es posible derivar dentro de la misma sucursal',
+      'Sí, siempre es posible sin ninguna configuración especial',
+      'Sí, pero requiere que el perfil de puesto tenga habilitada la opcion \'Derivar a trámites de otra sucursal\'',
+      'Sólo es posible si ambas sucursales pertenecen a la misma región',
+    ] },
+
+  { n:31, pts:2, type:'single',
+    text:'¿Qué son los Subtrámites y para que los puede usar un ejecutivo durante la atencion?',
+    options:[
+      'Son trámites secundarios que el cliente puede solicitar desde el kiosco',
+      'Son etapas o variaciones de un trámite que el ejecutivo registra durante la atencion, como pasos completados o productos adquiridos',
+      'Son trámites de baja prioridad que se atienden cuando no hay otros turnos en espera',
+      'Son trámites que sólo puede ejecutar el administrador de sucursal',
+    ] },
+
+  { n:32, pts:2, type:'multi',
+    text:'Por qué canales puede un cliente obtener un turno de forma virtual sin pasar por el kiosco fisico?',
+    options:[
+      'Desde una API externa integrada con el sistema',
+      'Desde una pagina web (mobile o desktop)',
+      'Escaneando el codigo QR impreso en su ticket presencial anterior',
+      'Desde cualquier red social de la empresa',
+      'Llamando al call center de la sucursal',
+    ] },
+
+  { n:33, pts:4, type:'multi',
+    text:'Que información puede visualizar un cliente al dar seguimiento a su turno virtual?',
+    options:[
+      'El estado actual de su turno y cuántas personas hay por delante',
+      'El tiempo de espera estimado para su atencion',
+      'Si su cita fue asignada con prioridad',
+      'El nombre del ejecutivo que lo atendio',
+      'Si es el próximo en ser llamado (cuando es el único en espera)',
+    ] },
+
+  { n:34, pts:2, type:'single',
+    text:'¿Para qué sirve el código QR incluido en el ticket presencial impreso?',
+    options:[
+      'Para pagar el servicio de atencion en linea',
+      'Para que el cliente pueda hacer seguimiento de su turno a traves de la Fila Virtual sin necesidad de recordar su codigo',
+      'Para evaluar la calidad de atencion recibida',
+      'Para redirigir al cliente al sitio web de la empresa',
+    ] },
+
+  { n:35, pts:2, type:'single',
+    text:'¿Qué mensaje recibe un cliente cuando es el unico en espera para ser atendido en la Fila Virtual?',
+    options:[
+      'Se le muestra el tiempo exacto en minutos que falta para su atencion',
+      'No se le muestra ningun tiempo estimado; en cambio se le indica que sera el proximo en ser llamado',
+      'Se le informa que la sucursal esta sin capacidad disponible',
+      'Se le solicita que confirme su asistencia a traves de un mensaje SMS',
+    ] },
+
+  { n:36, pts:2, type:'single',
+    text:'¿Qué es la \'tolerancia de ingreso\' en una agenda de citas y que controla exactamente?',
+    options:[
+      'El número maximo de citas que pueden agendarse por dia',
+      'Los minutos de diferencia con los que un cliente puede ingresar respecto al horario de su cita, y el tiempo que tiene para confirmarla',
+      'El tiempo minimo de anticipación con el que debe sacarse una cita',
+      'El tiempo maximo que el ejecutivo puede demorar en atender al cliente con cita',
+    ] },
+
+  { n:37, pts:5, type:'multi',
+    text:'¿Qué tipos de notificaciones automáticas puede recibir un cliente desde el módulo de citas?',
+    options:[
+      'Confirmación de la cita agendada',
+      'Recordatorio previo a la cita',
+      'notificación de cancelación de la cita',
+      'notificación por ausencia (cliente no se presento)',
+      'notificación ante cancelaciones masivas que afecten su cita',
+    ] },
+
+  { n:38, pts:4, type:'multi',
+    text:'Que canales estan disponibles para enviar notificaciones del modulo de citas a los clientes?',
+    options:[
+      'Email',
+      'SMS',
+      'WhatsApp',
+      'API (canal personalizado)',
+      'notificación push a la app nativa de Numia',
+    ] },
+
+  { n:39, pts:2, type:'single',
+    text:'Que ocurre cuando se activa la opcion \'Acepta terminos y condiciones\' en un trámite?',
+    options:[
+      'Se solicita al cliente aceptar los terminos y condiciones al momento de obtener una cita para ese trámite',
+      'Se solicita aceptacion al momento de llegar a la sucursal, antes de imprimir el ticket',
+      'Aplica a todos los trámites de la compañía de forma automática',
+      'Sólo aplica cuando el cliente saca turno desde el kiosco fisico',
+    ] },
+
+  { n:40, pts:2, type:'single',
+    text:'Es posible que la plataforma solicite o permita al cliente subir archivos al momento de agendar una cita?',
+    options:[
+      'No, la carga de archivos no es una funcionalidad disponible en el agendamiento',
+      'Sí, y esos archivos pueden ser visualizados desde el puesto de atencion y en el calendario de citas',
+      'Sí, pero sólo el cliente puede verlos; el ejecutivo no tiene acceso a ellos',
+      'Sólo es posible sí se desarrolla una integracion personalizada con un tercero',
+    ] },
+
+  { n:41, pts:2, type:'single',
+    text:'Como puede habilitarse la atencion por videollamada desde un kiosco fisico?',
+    options:[
+      'No es posible, la videollamada sólo funciona desde dispositivos moviles',
+      'Activando la opcion \'Habilitar sala de atencion virtual\' en la configuración del kiosco y asignando el box que realizara la atencion',
+      'El kiosco detecta automaticamente sí el trámite es virtual y lo habilita sin configuración adicional',
+      'Sólo es posible sí el kiosco tiene una camara integrada certificada por Numia',
+    ] },
+
+  { n:42, pts:2, type:'single',
+    text:'Que sucede sí un trámite esta configurado para atenderse por videollamada, pero el perfil del puesto de atencion tiene activada la opcion \'Deshabilitar videollamadas para puestos fisicos\'?',
+    options:[
+      'El turno no puede ser atendido hasta que se corrija la configuración',
+      'La atencion se realiza de forma presencial/fisica en lugar de por videollamada',
+      'El sistema deriva automaticamente el turno a otro puesto con videollamada habilitada',
+      'El cliente recibe una notificación indicando que la videollamada no esta disponible',
+    ] },
+
+  { n:43, pts:2, type:'single',
+    text:'Es posible descargar la grabacion de una videollamada? Desde donde se accede a ese recurso?',
+    options:[
+      'No, las videollamadas no quedan grabadas por politicas de privacidad',
+      'Sí, pero sólo el cliente puede descargarla desde su email',
+      'Sí, el link de descarga de la grabacion (y de los archivos compartidos) esta disponible en la seccion de Movimientos del sistema',
+      'Sí, pero requiere solicitud formal al equipo de soporte de Numia',
+    ] },
+
+  { n:44, pts:2, type:'single',
+    text:'La grabacion de videollamada aplica únicamente a atenciones virtuales o tambien a atenciones presenciales realizadas por video?',
+    options:[
+      'Sólo aplica a atenciones virtuales (turno desde mobile o fila virtual)',
+      'Sólo aplica a atenciones presenciales cuando el cliente esta en la sucursal',
+      'Aplica tanto a atenciones virtuales como presenciales realizadas por videollamada',
+      'La grabacion no esta disponible en ninguna modalidad de forma nativa',
+    ] },
+
+  { n:45, pts:3, type:'multi',
+    text:'Cuáles de las siguientes son funcionalidades disponibles en el modulo de videollamada de Numia?',
+    options:[
+      'Compartir documentos / archivos durante la llamada',
+      'Grabar la sesion de videollamada',
+      'Chat en vivo (mensajería de texto durante la llamada)',
+      'Añadir nuevos participantes a la videollamada en curso',
+      'Cobrowsing (navegacion compartida entre ejecutivo y cliente)',
+    ] },
+
+  { n:46, pts:5, type:'multi',
+    text:'Cuáles de los siguientes eventos pueden disparar el envio automático de un mensaje al cliente en el modulo de mensajería?',
+    options:[
+      'Llamado del turno',
+      'Turno finalizado',
+      'derivación del turno',
+      'cancelación masiva de turnos',
+      'Turno en espera (nuevo ingreso)',
+    ] },
+
+  { n:47, pts:2, type:'multi',
+    text:'Por qué canales puede enviarse mensajería al cliente desde el modulo de mensajería de Numia?',
+    options:[
+      'Email',
+      'SMS',
+      'WhatsApp (nativo)',
+      'notificación push en app movil',
+    ] },
+
+  { n:48, pts:2, type:'single',
+    text:'Es posible configurar mensajes distintos segun el trámite del turno, o los mensajes aplican de forma generica para todos?',
+    options:[
+      'Los mensajes son siempre genericos y aplican a todos los trámites sin excepcion',
+      'Sí, al crear un mensaje se puede indicar a que trámites aplica; solo los turnos de esos trámites recibiran la comunicacion',
+      'Sólo es posible diferenciar mensajes por sucursal, no por trámite',
+      'Se puede diferenciar por trámite pero sólo sí se usa el canal Email, no SMS',
+    ] },
+
+  { n:49, pts:2, type:'single',
+    text:'Como puede un cliente dar seguimiento a su turno a traves de la mensajería recibida?',
+    options:[
+      'No es posible el seguimiento desde la mensajería, solo desde el kiosco',
+      'A traves de un link de seguimiento incluido en el SMS o email, que lo lleva a la pantalla de estado del turno',
+      'Respondiendo al SMS recibido con su número de turno',
+      'Sólo desde la app movil oficial de Numia',
+    ] },
+
+  { n:50, pts:2, type:'single',
+    text:'Una pantalla de turnero en una sucursal, cuántos turneros puede mostrar simultaneamente como maximo?',
+    options:[
+      'Sólo 1 turnero por pantalla, para no generar confusion visual al cliente',
+      '2 turneros: uno para citas y otro para turnos espontaneos',
+      'Hasta 4 turneros simultaneos, cada uno configurable con trámites especificos',
+      'Ilimitados, la cantidad depende únicamente de la resolucion de la pantalla',
+      '3 turneros, uno por cada sala de espera disponible en la sucursal',
+    ] },
+
+  { n:51, pts:2, type:'single',
+    text:'Que permite la funcion \'Publicidad segun tipo de cliente\' en las pantallas de la sucursal?',
+    options:[
+      'Mostrar publicidad personalizada en el telefono de cada cliente cuando ingresa a la sucursal via Bluetooth',
+      'Cambiar automaticamente el contenido en pantalla cuando el porcentaje de clientes de cierto tipo en la sucursal supera un umbral definido',
+      'Deshabilitar toda publicidad cuando hay clientes VIP en espera para no distraerlos',
+      'Mostrar el nombre del cliente en la pantalla cuando su turno es llamado',
+      'Enviar publicidad por SMS al cliente segun su tipo mientras espera en la sucursal',
+    ] },
+];
+
+function syncExamMeta() {
+  const n = questions.length;
+  const minQuestionsRef = Math.ceil(n * 0.75);
+  const qT = document.getElementById('q-total');
+  if (qT) qT.textContent = n;
+  const sT = document.getElementById('submit-total');
+  if (sT) sT.textContent = n;
+  const sq = document.getElementById('stat-questions');
+  if (sq) sq.textContent = String(n);
+  const sp = document.getElementById('stat-q-min');
+  if (sp) sp.textContent = String(minQuestionsRef);
+  const ht = document.getElementById('hero-q-total');
+  if (ht) ht.textContent = String(n);
+  const hp = document.getElementById('hero-q-min');
+  if (hp) hp.textContent = String(minQuestionsRef);
+}
+syncExamMeta();
+
+const ANSWER_STORAGE_KEY = 'numiaManagerExamAnswers';
+const EMAIL_STORAGE_KEY = 'numiaManagerExamEmail';
+const PARTNER_PROFILE_KEY = 'numiaManagerPartnerProfile';
+const INTRO_STORAGE_KEY = 'numiaManagerExamIntroDone';
+
+const EXAM_TIMER_SEC = 30 * 60;
+let examTimerRemaining = EXAM_TIMER_SEC;
+let examTimerIntervalId = null;
+let examFiveMinWarnShown = false;
+let examTimeUpShown = false;
+
+function formatExamTime(seconds) {
+  const s = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function updateHeaderTimerDisplay() {
+  const el = document.getElementById('header-timer');
+  if (el) el.textContent = formatExamTime(examTimerRemaining);
+}
+
+function clearExamTimerInterval() {
+  if (examTimerIntervalId != null) {
+    clearInterval(examTimerIntervalId);
+    examTimerIntervalId = null;
+  }
+}
+
+function resetExamTimerUi() {
+  clearExamTimerInterval();
+  examTimerRemaining = EXAM_TIMER_SEC;
+  examFiveMinWarnShown = false;
+  examTimeUpShown = false;
+  const el = document.getElementById('header-timer');
+  if (el) {
+    el.textContent = formatExamTime(examTimerRemaining);
+    el.classList.remove('header-timer--warn');
+  }
+}
+
+function updateBodyModalScrollLock() {
+  const anyOpen = document.querySelector('.exam-modal-root.is-open');
+  document.body.style.overflow = anyOpen ? 'hidden' : '';
+}
+
+function openExamModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('is-open');
+  el.setAttribute('aria-hidden', 'false');
+  updateBodyModalScrollLock();
+}
+
+function closeExamModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('is-open');
+  el.setAttribute('aria-hidden', 'true');
+  updateBodyModalScrollLock();
+}
+
+function openTimerPreStartModal() {
+  closeExamModal('exam-modal-5min');
+  closeExamModal('exam-modal-timeup');
+  closeExamModal('exam-modal-unanswered');
+  resetExamTimerUi();
+  updateHeaderTimerDisplay();
+  openExamModal('exam-modal-start');
+  const btn = document.getElementById('btn-exam-modal-start');
+  if (btn) setTimeout(function () { btn.focus(); }, 50);
+}
+
+function closeTimerPreStartModalAndStart() {
+  closeExamModal('exam-modal-start');
+  startExamCountdown();
+}
+
+function startExamCountdown() {
+  clearExamTimerInterval();
+  examTimerRemaining = EXAM_TIMER_SEC;
+  updateHeaderTimerDisplay();
+  const timerEl = document.getElementById('header-timer');
+  examTimerIntervalId = setInterval(function () {
+    if (examTimerRemaining <= 0) {
+      clearExamTimerInterval();
+      return;
+    }
+    examTimerRemaining -= 1;
+    updateHeaderTimerDisplay();
+    if (timerEl && examTimerRemaining <= 300) {
+      timerEl.classList.add('header-timer--warn');
+    }
+    if (examTimerRemaining <= 300 && !examFiveMinWarnShown) {
+      examFiveMinWarnShown = true;
+      openExamModal('exam-modal-5min');
+    }
+    if (examTimerRemaining <= 0) {
+      clearExamTimerInterval();
+      showExamTimeUpModal();
+    }
+  }, 1000);
+}
+
+function showExamTimeUpModal() {
+  if (examTimeUpShown) return;
+  examTimeUpShown = true;
+  closeExamModal('exam-modal-5min');
+  closeExamModal('exam-modal-unanswered');
+  openExamModal('exam-modal-timeup');
+  const btn = document.getElementById('btn-exam-modal-timeup');
+  if (btn) {
+    btn.disabled = false;
+    setTimeout(function () { btn.focus(); }, 50);
+  }
+}
+
+function isValidEmail(s) {
+  s = (s || '').trim();
+  if (s.length < 5) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function isNonEmptyName(s) {
+  s = (s || '').trim();
+  if (s.length < 2 || s.length > 80) return false;
+  return /^[\p{L}\s'.-]+$/u.test(s);
+}
+
+function isValidCorporatePhone(s) {
+  const d = String(s || '').replace(/\D/g, '');
+  return d.length >= 8 && d.length <= 15;
+}
+
+function readPartnerProfileFromStorage() {
+  try {
+    const raw = sessionStorage.getItem(PARTNER_PROFILE_KEY);
+    if (!raw) return null;
+    const o = JSON.parse(raw);
+    if (!o || typeof o !== 'object') return null;
+    return {
+      email: String(o.email || '').trim(),
+      nombre: String(o.nombre || '').trim(),
+      apellido: String(o.apellido || '').trim(),
+      cel: String(o.cel || '').trim(),
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+function isPartnerProfileComplete(p) {
+  return !!(p && isValidEmail(p.email) && isNonEmptyName(p.nombre) && isNonEmptyName(p.apellido) && isValidCorporatePhone(p.cel));
+}
+
+function savePartnerProfile(p) {
+  sessionStorage.setItem(PARTNER_PROFILE_KEY, JSON.stringify(p));
+  sessionStorage.setItem(EMAIL_STORAGE_KEY, p.email.trim());
+}
+
+function setHeaderWelcomeVisible(visible) {
+  const el = document.getElementById('header-welcome');
+  const line = document.getElementById('header-welcome-line');
+  if (!el) return;
+  if (visible && line) {
+    const p = readPartnerProfileFromStorage();
+    const nm = p && p.nombre ? String(p.nombre).trim() : '';
+    line.textContent = nm ? ('Bienvenido, ' + nm) : 'Bienvenido';
+  }
+  el.style.display = visible ? 'flex' : 'none';
+  el.setAttribute('aria-hidden', visible ? 'false' : 'true');
+}
+
+function setHeaderExamProgressVisible(visible) {
+  if (visible) setHeaderWelcomeVisible(false);
+  const stats = document.getElementById('header-exam-stats');
+  const bar = document.getElementById('header-progress-bar-wrap');
+  if (stats) {
+    stats.style.display = visible ? 'flex' : 'none';
+    stats.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  }
+  if (bar) bar.style.display = visible ? 'block' : 'none';
+}
+
+function showExamChrome() {
+  document.getElementById('email-gate').style.display = 'none';
+  document.getElementById('exam-header').style.display = 'block';
+  document.getElementById('exam-screen').style.display = 'flex';
+}
+
+function showExamIntroOnly() {
+  const intro = document.getElementById('exam-intro');
+  const wrap = document.getElementById('exam-questions-wrap');
+  const cb = document.getElementById('intro-read-cb');
+  if (intro) intro.style.display = 'block';
+  if (wrap) wrap.style.display = 'none';
+  if (cb) cb.checked = false;
+  setHeaderExamProgressVisible(false);
+  setHeaderWelcomeVisible(true);
+}
+
+function continueToQuestions() {
+  const cb = document.getElementById('intro-read-cb');
+  if (!cb || !cb.checked) {
+    alert('Marca la casilla para indicar que leíste las instrucciones.');
+    return;
+  }
+  try {
+    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
+  } catch (e) { /* */ }
+  const intro = document.getElementById('exam-intro');
+  const wrap = document.getElementById('exam-questions-wrap');
+  if (intro) intro.style.display = 'none';
+  if (wrap) wrap.style.display = 'block';
+  setHeaderExamProgressVisible(true);
+  buildExam();
+  openTimerPreStartModal();
+}
+
+function startWithEmail() {
+  const err = document.getElementById('gate-err');
+  const elEmail = document.getElementById('user-email');
+  const elNombre = document.getElementById('user-nombre');
+  const elApellido = document.getElementById('user-apellido');
+  const elCel = document.getElementById('user-cel');
+  err.textContent = '';
+  const profile = {
+    email: (elEmail && elEmail.value) ? elEmail.value.trim() : '',
+    nombre: (elNombre && elNombre.value) ? elNombre.value.trim() : '',
+    apellido: (elApellido && elApellido.value) ? elApellido.value.trim() : '',
+    cel: (elCel && elCel.value) ? elCel.value.trim() : '',
+  };
+  if (!isNonEmptyName(profile.nombre)) {
+    err.textContent = 'Ingresa un nombre válido (mínimo 2 letras).';
+    elNombre.focus();
+    return;
+  }
+  if (!isNonEmptyName(profile.apellido)) {
+    err.textContent = 'Ingresa un apellido válido (mínimo 2 letras).';
+    elApellido.focus();
+    return;
+  }
+  if (!profile.email) {
+    err.textContent = 'Ingresa un correo para continuar.';
+    elEmail.focus();
+    return;
+  }
+  if (!isValidEmail(profile.email)) {
+    err.textContent = 'Escribe un correo válido.';
+    elEmail.focus();
+    return;
+  }
+  if (!isValidCorporatePhone(profile.cel)) {
+    err.textContent = 'Ingresa un celular empresarial válido (entre 8 y 15 dígitos).';
+    elCel.focus();
+    return;
+  }
+  try {
+    savePartnerProfile(profile);
+    sessionStorage.removeItem(INTRO_STORAGE_KEY);
+  } catch (e) {
+    err.textContent = 'No se pudo guardar. Habilita el almacenamiento de este sitio e intenta de nuevo.';
+    return;
+  }
+  showExamChrome();
+  showExamIntroOnly();
+}
+
+const userAnswers = questions.map(() => new Set());
+
+let submitZoneRevealObserver = null;
+
+function disconnectSubmitZoneRevealObserver() {
+  if (submitZoneRevealObserver) {
+    submitZoneRevealObserver.disconnect();
+    submitZoneRevealObserver = null;
+  }
+}
+
+function resetSubmitZoneToHidden() {
+  disconnectSubmitZoneRevealObserver();
+  const zone = document.querySelector('#exam-questions-wrap .submit-zone');
+  if (zone) zone.classList.remove('submit-zone--visible');
+}
+
+function setupSubmitZoneReveal() {
+  resetSubmitZoneToHidden();
+  const sentinel = document.getElementById('submit-reveal-sentinel');
+  const zone = document.querySelector('#exam-questions-wrap .submit-zone');
+  if (!sentinel || !zone) return;
+  submitZoneRevealObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        zone.classList.add('submit-zone--visible');
+        disconnectSubmitZoneRevealObserver();
+      });
+    },
+    { root: null, rootMargin: '0px', threshold: 0.25 }
+  );
+  submitZoneRevealObserver.observe(sentinel);
+}
+
+function updateProgress(){
+  const n = userAnswers.filter(s => s.size > 0).length;
+  document.getElementById('answered-count').textContent = n;
+  document.getElementById('submit-count').textContent = n;
+  document.getElementById('progress-bar').style.width = (n / questions.length * 100) + '%';
+}
+
+function toggle(qi, oi, isSingle){
+  const s = userAnswers[qi];
+  if(isSingle){ s.clear(); s.add(oi); }
+  else { if(s.has(oi)) s.delete(oi); else s.add(oi); }
+  const card = document.querySelector(`.q-card[data-q="${qi}"]`);
+  card.querySelectorAll('.option-label').forEach((lbl, i) => {
+    lbl.classList.toggle('selected', s.has(i));
+  });
+  card.classList.toggle('answered', s.size > 0);
+  if (s.size > 0) card.classList.remove('q-pending-answer');
+  updateProgress();
+}
+
+function clearUnansweredHighlights() {
+  document.querySelectorAll('.q-card.q-pending-answer').forEach(function (el) {
+    el.classList.remove('q-pending-answer');
+  });
+}
+
+function highlightUnansweredQuestions() {
+  clearUnansweredHighlights();
+  userAnswers.forEach(function (s, qi) {
+    if (s.size > 0) return;
+    const card = document.querySelector('.q-card[data-q="' + qi + '"]');
+    if (card) card.classList.add('q-pending-answer');
+  });
+  const first = document.querySelector('.q-card.q-pending-answer');
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function openUnansweredModal(count) {
+  clearUnansweredHighlights();
+  const c = document.getElementById('modal-unanswered-count');
+  const noun = document.getElementById('modal-unanswered-noun');
+  if (c) c.textContent = String(count);
+  if (noun) noun.textContent = count === 1 ? 'pregunta' : 'preguntas';
+  openExamModal('exam-modal-unanswered');
+  const backBtn = document.getElementById('btn-unanswered-back');
+  if (backBtn) setTimeout(function () { backBtn.focus(); }, 50);
+}
+
+function buildExam(){
+  document.getElementById('q-container').innerHTML = questions.map((q, qi) => `
+    <div class="q-card" data-q="${qi}">
+      <div class="q-top">
+        <div class="q-meta">
+          <span class="q-num-badge">Pregunta ${q.n}</span>
+          <span class="q-type-badge ${q.type==='multi'?'badge-multi':'badge-single'}">${q.type==='multi'?'Múltiple opción':'Opción única'}</span>
+        </div>
+        <span class="q-pts-badge">${q.pts} pt${q.pts>1?'s':''}</span>
+      </div>
+      <p class="q-text">${q.text}</p>
+      <div class="options-list">
+        ${q.options.map((opt, oi) => `
+          <label class="option-label" onclick="toggle(${qi},${oi},${q.type==='single'})">
+            <div class="custom-input ${q.type==='single'?'custom-radio':'custom-checkbox'}"></div>
+            <span class="option-text">${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+  updateProgress();
+  requestAnimationFrame(function () {
+    requestAnimationFrame(setupSubmitZoneReveal);
+  });
+}
+
+function submitExam(skipUnansweredConfirm){
+  const p = readPartnerProfileFromStorage();
+  if (!isPartnerProfileComplete(p)) {
+    clearExamTimerInterval();
+    closeExamModal('exam-modal-5min');
+    closeExamModal('exam-modal-timeup');
+    closeExamModal('exam-modal-unanswered');
+    alert('Faltan datos del partner. Vuelve al inicio y completa correo, nombre, apellido y celular empresarial.');
+    try { sessionStorage.removeItem(INTRO_STORAGE_KEY); } catch (e) { /* */ }
+    document.getElementById('email-gate').style.display = 'flex';
+    document.getElementById('exam-header').style.display = 'none';
+    document.getElementById('exam-screen').style.display = 'none';
+    return;
+  }
+  const unanswered = userAnswers.filter(s => s.size === 0).length;
+  if (!skipUnansweredConfirm && unanswered > 0) {
+    openUnansweredModal(unanswered);
+    return;
+  }
+
+  clearUnansweredHighlights();
+  clearExamTimerInterval();
+  closeExamModal('exam-modal-5min');
+  closeExamModal('exam-modal-timeup');
+  closeExamModal('exam-modal-unanswered');
+
+  const payload = userAnswers.map(s => [...s].sort((a, b) => a - b));
+  try {
+    sessionStorage.setItem(ANSWER_STORAGE_KEY, JSON.stringify(payload));
+  } catch (e) {
+    alert('No se pudo guardar el intento. Revisa que el almacenamiento del navegador esté habilitado.');
+    if (skipUnansweredConfirm) {
+      if (examTimeUpShown) {
+        const bUp = document.getElementById('btn-exam-modal-timeup');
+        if (bUp) bUp.disabled = false;
+        openExamModal('exam-modal-timeup');
+      } else {
+        openExamModal('exam-modal-unanswered');
+      }
+    }
+    return;
+  }
+  window.location.href = 'certificacion-numia-manager-resultado.html';
+}
+
+(function initPage(){
+  const p = readPartnerProfileFromStorage();
+  const elEmail = document.getElementById('user-email');
+  const elNombre = document.getElementById('user-nombre');
+  const elApellido = document.getElementById('user-apellido');
+  const elCel = document.getElementById('user-cel');
+  const btnCont = document.getElementById('btn-exam-continue');
+  if (btnCont) btnCont.addEventListener('click', continueToQuestions);
+
+  if (isPartnerProfileComplete(p)) {
+    if (elEmail) elEmail.value = p.email;
+    if (elNombre) elNombre.value = p.nombre;
+    if (elApellido) elApellido.value = p.apellido;
+    if (elCel) elCel.value = p.cel;
+    showExamChrome();
+    try {
+      if (sessionStorage.getItem(INTRO_STORAGE_KEY) === '1') {
+        const introEl = document.getElementById('exam-intro');
+        const wrapEl = document.getElementById('exam-questions-wrap');
+        if (introEl) introEl.style.display = 'none';
+        if (wrapEl) wrapEl.style.display = 'block';
+        setHeaderExamProgressVisible(true);
+        buildExam();
+        openTimerPreStartModal();
+      } else {
+        showExamIntroOnly();
+      }
+    } catch (e) {
+      showExamIntroOnly();
+    }
+  } else {
+    if (p && p.email && elEmail) elEmail.value = p.email;
+    if (p && p.nombre && elNombre) elNombre.value = p.nombre;
+    if (p && p.apellido && elApellido) elApellido.value = p.apellido;
+    if (p && p.cel && elCel) elCel.value = p.cel;
+    const gateInputs = [elEmail, elNombre, elApellido, elCel].filter(Boolean);
+    gateInputs.forEach(function (inp) {
+      inp.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); startWithEmail(); }
+      });
+    });
+  }
+
+  const btnModalStart = document.getElementById('btn-exam-modal-start');
+  if (btnModalStart) btnModalStart.addEventListener('click', closeTimerPreStartModalAndStart);
+  const btnModal5 = document.getElementById('btn-exam-modal-5min');
+  if (btnModal5) btnModal5.addEventListener('click', function () { closeExamModal('exam-modal-5min'); });
+  const btnModalUp = document.getElementById('btn-exam-modal-timeup');
+  if (btnModalUp) {
+    btnModalUp.addEventListener('click', function () {
+      btnModalUp.disabled = true;
+      closeExamModal('exam-modal-timeup');
+      submitExam(true);
+    });
+  }
+  const btnUnBack = document.getElementById('btn-unanswered-back');
+  if (btnUnBack) {
+    btnUnBack.addEventListener('click', function () {
+      closeExamModal('exam-modal-unanswered');
+      highlightUnansweredQuestions();
+    });
+  }
+  const btnUnSubmit = document.getElementById('btn-unanswered-submit');
+  if (btnUnSubmit) {
+    btnUnSubmit.addEventListener('click', function () {
+      closeExamModal('exam-modal-unanswered');
+      clearUnansweredHighlights();
+      submitExam(true);
+    });
+  }
+})();
+</script>
+</body>
+</html>

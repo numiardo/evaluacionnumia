@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultado — Certificación Numia Manager</title>
+<link rel="icon" href="img/N.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --black: #060A27;
+    --purple: #863DFF;
+    --grey: #9593A1;
+    --turquoise: #7BE1C9;
+    --lavender: #CAC6FF;
+    --lilac: #DDE0FF;
+    --neon: #CBFF2E;
+    --white: #FFFFFF;
+    --border: #E2E2EC;
+    --bg: #F5F5FA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hanken Grotesk', Arial, sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
+
+  .results-hero { background: var(--black); padding: 52px 24px 44px; text-align: center; border-bottom: 3px solid var(--purple); }
+  .results-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--turquoise); margin-bottom: 12px; }
+  .results-grade { font-size: clamp(44px, 14vw, 80px); font-weight: 700; color: var(--neon); line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .results-badge { display: inline-block; font-size: 14px; font-weight: 700; padding: 8px 24px; border-radius: 24px; margin-bottom: 24px; }
+  .badge-aprobado { background: var(--turquoise); color: var(--black); }
+  .badge-reprobado { background: #F09595; color: #4A1515; }
+
+  .results-main { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
+  .btn-pdf { background: var(--purple); color: var(--white); font-family: 'Hanken Grotesk', Arial, sans-serif; font-size: 14px; font-weight: 700; padding: 11px 26px; border-radius: 10px; border: none; cursor: pointer; }
+  .btn-pdf:hover { opacity: 0.9; }
+  .results-actions-bar { display: flex; justify-content: center; margin-top: 20px; }
+  .error-box { max-width: 480px; margin: 60px auto; padding: 32px; background: var(--white); border-radius: 16px; text-align: center; border: 1px solid var(--border); }
+  .error-box a { color: var(--purple); font-weight: 600; }
+  .res-partner-block { margin-top: 8px; margin-bottom: 8px; text-align: center; }
+  .res-partner-title { font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 0; letter-spacing: -0.2px; }
+  .res-api-line { font-size: 12px; color: var(--grey); margin-top: 12px; min-height: 1.2em; }
+  .res-api-line.ok { color: var(--turquoise); }
+  .res-api-line.warn { color: #F0C080; }
+  .download-reminder {
+    display: flex; gap: 14px; align-items: flex-start; background: linear-gradient(135deg, #F5F0FF 0%, #EEF6FF 100%);
+    border: 1.5px solid var(--lavender);
+    border-left: 4px solid var(--purple);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 20px;
+  }
+  .download-reminder strong { display: block; font-size: 15px; color: var(--black); margin-bottom: 8px; }
+  .download-reminder p { font-size: 13px; color: #4A4A5C; line-height: 1.5; margin: 0; font-weight: 500; }
+  .download-reminder .rem-ico { flex-shrink: 0; width: 36px; height: 36px; background: var(--white); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--purple); }
+  footer { background: var(--black); text-align: center; padding: 20px 24px; font-size: 12px; color: var(--grey); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; }
+  .footer-brand-logo { height: 20px; width: auto; vertical-align: middle; filter: brightness(0) invert(1); opacity: 0.92; }
+</style>
+</head>
+<body>
+
+<div id="err-screen" style="display:none" class="error-box">
+  <p style="margin-bottom:16px;">No hay resultados para mostrar. Enviá la evaluación desde el examen.</p>
+  <a href="certificacion-numia-manager.html">← Volver al examen</a>
+</div>
+
+<div id="results-wrap" style="display:none">
+  <div class="results-hero">
+    <p class="results-label">Resultado final</p>
+    <div class="results-grade" id="res-grade" aria-label="Calificación">0/0</div>
+    <div class="results-badge" id="res-badge"></div>
+    <div id="res-partner-block" style="display:none" class="res-partner-block">
+      <p class="res-partner-title" id="res-partner-name">—</p>
+    </div>
+    <p class="res-api-line" id="res-api-line" role="status"></p>
+  </div>
+  <div class="results-main">
+    <div class="download-reminder" id="download-reminder">
+      <div class="rem-ico" aria-hidden="true">⬇</div>
+      <div>
+        <strong>Recuerda descargar el resultado de tu evaluación</strong>
+        <p>Genera y guarda el PDF</p>
+      </div>
+    </div>
+    <div class="results-actions-bar">
+      <button class="btn-pdf" type="button" id="btn-pdf" aria-describedby="download-reminder">Descargar PDF</button>
+    </div>
+  </div>
+  <footer><img src="img/numia.png" alt="Numia" class="footer-brand-logo" width="90" height="28" decoding="async" /><span>· Certificación Partners · Información confidencial, todos los derechos reservados</span></footer>
+</div>
+
+<script>
+/* Almacenamiento: respuestas y perfil del partner */
+const STORAGE_KEY = 'numiaManagerExamAnswers';
+const PARTNER_PROFILE_KEY = 'numiaManagerPartnerProfile';
+const INTRO_STORAGE_KEY = 'numiaManagerExamIntroDone';
+const NOCO_API_URL = 'https://app.nocodb.com/api/v2/tables/m08wmi55gby9ioi/records';
+const NOCO_XC_TOKEN = 'esMWeT85CmXjEnt5kvF1J97zD-d4_BX9rq228I9z';
+
+function isValidEmail(s) {
+  s = (s || '').trim();
+  if (s.length < 5) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function isNonEmptyName(s) {
+  s = (s || '').trim();
+  if (s.length < 2 || s.length > 80) return false;
+  return /^[\p{L}\s'.-]+$/u.test(s);
+}
+
+function isValidCorporatePhone(s) {
+  const d = String(s || '').replace(/\D/g, '');
+  return d.length >= 8 && d.length <= 15;
+}
+
+function readPartnerProfileFromStorage() {
+  try {
+    const raw = sessionStorage.getItem(PARTNER_PROFILE_KEY);
+    if (!raw) return null;
+    const o = JSON.parse(raw);
+    if (!o || typeof o !== 'object') return null;
+    return {
+      email: String(o.email || '').trim(),
+      nombre: String(o.nombre || '').trim(),
+      apellido: String(o.apellido || '').trim(),
+      cel: String(o.cel || '').trim(),
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+function isPartnerProfileComplete(p) {
+  return !!(p && isValidEmail(p.email) && isNonEmptyName(p.nombre) && isNonEmptyName(p.apellido) && isValidCorporatePhone(p.cel));
+}
+
+async function registerResultInNocodb(partner, puntuacion) {
+  const res = await fetch(NOCO_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'xc-token': NOCO_XC_TOKEN,
+    },
+    body: JSON.stringify({
+      Email: partner.email.trim(),
+      Puntuacion: puntuacion,
+      Nombre: partner.nombre.trim(),
+      Apellido: partner.apellido.trim(),
+      CelEmpresarial: partner.cel.trim(),
+    }),
+  });
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(t || res.statusText);
+  }
+  return res.json().catch(function () { return null; });
+}
+
+/* Banco completo con respuestas correctas — solo en esta página */
+const questions = [
+  { n:1, pts:5, type:'multi',
+    text:'Impresión de ticket. Indique cuál de las siguientes afirmaciones son correctas.',
+    options:['Es posible imprimir QR de seguimiento sin requerir fila virtual','Es posible imprimir tiempos exactos de espera','Es posible imprimir información obtenida desde otro sistema','Es posible indicar cuántas personas hay en espera antes del turno'],
+    correct:[0,2,3] },
+  { n:2, pts:5, type:'single',
+    text:'Un cliente desea personalizar el puesto de atención simplificando la cantidad de botones visualizados para que no sea posible derivar turnos. ¿Cómo haría esta configuración?',
+    options:['Desde perfil de puesto, deshabilitar el botón Derivar, en la opción Botones habilitados','Deshabilitar la opción Derivar trámite desde el puesto de trabajo de la sucursal, debe hacerlo sucursal por sucursal','No es posible'],
+    correct:[0] },
+  { n:3, pts:1, type:'single',
+    text:'Un cliente requiere que se obtenga información asociada a próxima mejor oferta (NBO). Desea que esa información se visualice en el ticket, tótem y en el puesto de trabajo.',
+    options:['No es posible','Sólo es posible disponibilizar la información en el ticket y totem','Es posible desarrollando un conector','Sólo es posible si el CRM es Salesforce'],
+    correct:[2] },
+  { n:4, pts:5, type:'multi',
+    text:'Un cliente desea implementar perfiles de puestos que sólo se encuentren disponibles en una sucursal piloto. ¿Cómo implementaría esto?',
+    options:['Generando el perfil de puesto y asignándolo sólo a esa sucursal','Generando un perfil de puesto sólo en esa sucursal','No es posible hacerlo'],
+    correct:[0,1] },
+  { n:5, pts:5, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son ciertas sobre el módulo de Cartelería digital.',
+    options:['Posee un widget Carrusel de texto conformado por un grupo de palabras u oraciones pasantes que se muestran continuamente','Posee un widget de multimedia que permite combinar videos e imágenes','Es posible embeber páginas URL','Existe un widget que permite consumir APIs y disponibilizar el contenido brindándole formato HTML','Existe un widget que permite establecer una videollamada desde un tótem'],
+    correct:[0,1,2,3,4] },
+  { n:6, pts:7, type:'multi',
+    text:'Indique qué afirmaciones sobre prioridades son correctas.',
+    options:['Es posible establecer prioridades de los turnos generados por citas versus los turnos espontáneos','El ordenamiento por orden de llegada permite al ejecutivo decidir manualmente los turnos que son llamados, entre los que se encuentran en la sala de espera','Existen dos tipos de algoritmos basados en envejecimiento: Por trámite y por Cliente','No es posible establecer dos trámites con las mismas prioridades','Existe una opción llamada "Llamado automático" que permite definir un intervalo de tiempo para que el sistema efectúe de manera automática el llamado de un nuevo turno'],
+    correct:[0,2,4] },
+  { n:7, pts:1, type:'single',
+    text:'¿Es posible establecer puestos que sólo atiendan a determinados tipos de Clientes?',
+    options:['Sí, esto se configura a nivel de perfil de puesto de trabajo','Sí, esto se configura a nivel de puesto de trabajo','No es posible'],
+    correct:[0] },
+  { n:8, pts:1, type:'single',
+    text:'¿Es posible manejar numeración por tipo de trámite?',
+    options:['Sí, se pueden establecer numeraciones para citas y numeraciones para filas','Sí, es único para filas y citas','Es único por sucursal'],
+    correct:[0] },
+  { n:9, pts:5, type:'single',
+    text:'Un cliente requiere que al momento de obtener determinadas citas, se acepten términos y condiciones.',
+    options:['Esto es posible desarrollando una interfaz personalizada. En dicha interfaz deben consumirse APIs','Esto es un comportamiento nativo, pero aplica a todas las citas','Esto corresponde a un comportamiento nativo de la solución'],
+    correct:[2] },
+  { n:10, pts:10, type:'multi',
+    text:'Indique qué requerimientos son cubiertos por la solución (con o sin integración).',
+    options:['Ninguna persona que asista a la sucursal puede esperar más de 60 minutos','En el ticket de atención tiene que aparecer los datos del cliente: nombre, apellido, cédula y oferta de productos','Generar código QR para atención presencial','Atender solicitudes a través del canal Chat (WhatsApp o web)','Que exista un puesto en atención comercial que sólo pueda llamar a los turnos de clientes VIP'],
+    correct:[0,1,2,3,4] },
+  { n:11, pts:5, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son ciertas sobre APIs y webhooks.',
+    options:['Es posible reproducir el comportamiento de un puesto de atención utilizando APIs','Existen webhooks que se ejecutan ante la ocurrencia de eventos en turnos (encolamiento, llamado, tipificación, etc.)','Existen APIs para el ABM de trámites y puestos de trabajo','Existen APIs para modificar el contenido de etiquetas de diseño','Existen APIs que permiten generar entradas en turneros'],
+    correct:[0,1,4] },
+  { n:12, pts:5, type:'single',
+    text:'¿La solución permite integración con sistemas de accesos centralizados como Active Directory mediante el protocolo LDAP?',
+    options:['Es posible tanto por perfil de acceso como por sucursal','Sí, sólo es posible hacerlo por sucursal','Sí, sólo es posible por perfil de acceso','Sólo es posible por perfil de puesto','No es posible'],
+    correct:[0] },
+  { n:13, pts:7, type:'multi',
+    text:'Indique cuáles de las siguientes capacidades están incluidas dentro de Numia Manager.',
+    options:['La plataforma permite realizar derivaciones a otras sucursales desde el puesto de trabajo','Buscar turnos ausentes dentro de un puesto','Registrar mensajes internos antes de derivar un ticket','Cancelar un llamado realizado','Seguimiento histórico de los tipificados por parte de los ejecutivos'],
+    correct:[0,1,2,3,4] },
+  { n:14, pts:1, type:'single',
+    text:'¿La solución posee integración nativa con videollamada?',
+    options:['Sí, solo Vonage','Sí, Vonage, Zoom y Teams','Sí, cualquier proveedor','No posee esta capacidad'],
+    correct:[1] },
+  { n:15, pts:1, type:'single',
+    text:'¿Qué canales pueden ser utilizados para notificaciones?',
+    options:['Sólo email','Sólo email y SMS','Email y SMS. WhatsApp a través de un tercero','Email, SMS, WhatsApp de forma nativa','Es posible integrarnos con cualquier canal, pero la solución no posee canales nativos','No posee notificaciones'],
+    correct:[2] },
+  { n:16, pts:5, type:'single',
+    text:'Un cliente requiere poder encolar turnos a través de APIs.',
+    options:['Es posible sólo si posee fila virtual','Se requiere un conector','Existen APIs dentro de Numia Manager, no se requieren módulos adicionales'],
+    correct:[2] },
+  { n:17, pts:5, type:'single',
+    text:'Un cliente requiere atención priorizada por tipo de Cliente, priorizando a la persona por sobre lo que necesita hacer.',
+    options:['Será necesario consumir esta priorización desde otro sistema ya que la solución no cuenta con esta capacidad','Debemos configurar las prioridades desde Base de Clientes - Tipo de Clientes. Es posible hacerlo a partir de cualquier dato del Cliente desde la opción Base de Clientes - Datos de priorización y luego indicar este algoritmo en el Perfil de puesto','Debemos configurar las prioridades desde Base de Clientes - Tipo de cliente y luego indicar este algoritmo de priorización en el Perfil de puesto','Debemos configurar las prioridades desde Base de Clientes - Tipo de cliente y luego indicar este algoritmo en el Puesto de cada sucursal','No es posible'],
+    correct:[1] },
+  { n:18, pts:2, type:'multi',
+    text:'Indique qué afirmaciones son correctas sobre la configuración de trámites.',
+    options:['Al momento de configurar un trámite, es posible balancear salas de espera para prevenir la saturación de una sala','Al momento de configurar un trámite es posible indicar a qué otros trámites se puede derivar y a qué sucursales','Es posible especificar SLA por trámites e indicar cuáles se computan en el nivel de servicio','Es posible establecer el texto que se visualizará en el ticket. Este texto es configurable por sucursal'],
+    correct:[1,2,3] },
+  { n:19, pts:5, type:'single',
+    text:'Se requiere que los puestos de atención no pasen más de 45 minutos sin actividad cuando se encuentran en estado Almuerzo.',
+    options:['Esta configuración se realiza desde Avanzado - configuración de compañía - Estados del puesto','Esta funcionalidad sólo es posible a través del consumo de API','Esta configuración se realiza desde Avanzado - Tareas. Se debe planificar con qué frecuencia debe ejecutarse esta tarea','Esta configuración se realiza desde Panel de compañía - Perfiles de puesto base - Tiempo máximo inactivo','No es posible'],
+    correct:[0] },
+  { n:20, pts:2, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones sobre videollamadas NO son ciertas.',
+    options:['La utilización de videollamadas propuesta por Numia requiere descargar una aplicación','Es posible iniciar videollamadas desde un tótem','No es posible deshabilitar el chat durante videollamada','No es posible intercambiar archivos adjuntos'],
+    correct:[0,2,3] },
+  { n:21, pts:2, type:'multi',
+    text:'Indique cuál de las siguientes afirmaciones son correctas sobre Cartelería digital.',
+    options:['Es posible establecer vigencia para imágenes y activos','No es posible asociar más de un canal a una TV','La asignación de contenidos de un canal es sólo a través de una agenda de contenido','En caso de pérdida de conexión, el canal siempre fuerza el apagado de la TV'],
+    correct:[0] },
+  { n:22, pts:5, type:'single',
+    text:'Un cliente solicita que se envíen encuestas ante la finalización y cuando el cliente no se presenta. ¿Es posible esto?',
+    options:['Es posible, solamente es posible enviar encuestas ante estos dos eventos','Es posible, también es posible enviar encuestas ante una derivación','Sólo es posible enviar encuestas al finalizar una atención','Se pueden enviar encuestas ante cualquier evento de atención'],
+    correct:[1] },
+  { n:23, pts:5, type:'single',
+    text:'Un cliente desea enviar recordatorios personalizados a través de los canales SMS, WhatsApp y email. ¿Es esto posible?',
+    options:['Sí, requiere integraciones','Sí, es el comportamiento nativo','No es posible'],
+    correct:[1] },
+  { n:24, pts:4, type:'multi',
+    text:'Numia ofrece funcionalidades de Speech Analytics. Indique qué afirmaciones son correctas.',
+    options:['Está disponible sólo para atención virtual','Está disponible para virtual, presencial y Chat','Es posible hacerlo analizando videos o textos grabados por fuera de Numia','Está disponible para todos los clientes de Numia'],
+    correct:[1,2] },
+
+  { n:25, pts:5, type:'single',
+    text:'Un cliente requiere atención priorizada por tipo de cliente y por trámite. ¿Cómo se configura?',
+    options:[
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por trámite. Indicar el algoritmo "Prioridad por trámite y cliente" en el Perfil de puesto llamado.',
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente. La solución siempre prioriza por trámite de forma automática.',
+      'Configurar prioridades desde Base de Clientes - Tipo de cliente, definir prioridades por trámite. Indicar el algoritmo "Prioridad por trámite y cliente" a nivel compañía.',
+      'Será necesario consumir esta priorización desde otro sistema ya que la solución no cuenta con esta capacidad',
+      'No es posible',
+    ], correct:[0] },
+
+  { n:26, pts:2, type:'single',
+    text:'Además del número de turno, ¿qué tipos de información pueden incluirse en un ticket impreso al cliente?',
+    options:[
+      'Sólo el número de turno y el trámite solicitado',
+      'Datos del cliente (nombre, DNI), sala de espera, tiempo estimado, texto personalizado por trámite o tipo de cliente, QR de seguimiento, entre otros',
+      'Únicamente información del trámite y la sucursal',
+      'El ticket no es personalizable, siempre muestra los mismos campos',
+    ], correct:[1] },
+
+  { n:27, pts:2, type:'single',
+    text:'Cuáles son los dos grandes tipos de algoritmos de priorización de turnos disponibles en la plataforma? ¿En qué se diferencian?',
+    options:[
+      'Algoritmo FIFO (primero en llegar) y Algoritmo VIP (clientes prioritarios)',
+      'Algoritmo Estándar (orden serial por prioridad fija) y Algoritmo de Envejecimiento (orden dinámico según tiempo de espera acumulado)',
+      'Algoritmo por trámite y Algoritmo por sucursal',
+      'Algoritmo manual y Algoritmo automático',
+    ], correct:[2] },
+
+  { n:28, pts:2, type:'single',
+    text:'¿Para qué sirve el Grupo de Desborde y en qué situación se activa automáticamente?',
+    options:[
+      'Es un grupo de puestos de atencion de emergencia que se activa cuando hay un corte de luz',
+      'Permite que puestos secundarios atiendan trámites de una fila saturada, cuando los puestos principales estan ocupados o desconectados y dicho puesto no tiene turnos en su fila principal',
+      'Agrupa trámites de alta demanda para ser atendidos en horario extendido',
+      'Es un grupo de reserva que sólo puede ser activado manualmente por el administrador',
+    ], correct:[1] },
+
+  { n:29, pts:4, type:'multi',
+    text:'¿Qué opciones tiene un puesto de atencion para gestionar un turno cuyo cliente no se presentó?',
+    options:[
+      'Marcar el turno con el estado \'No se presento\' y finalizarlo',
+      'Ausentar el turno, manteniendolo activo en una fila aparte de ausentados',
+      'Buscar al ausente y volver a llamarlo desde la fila de ausentados',
+      'Cancelar directamente el turno sin registro',
+      'Colocar el turno al final de la fila de espera activa',
+    ], correct:[0,1,2,4] },
+
+  { n:30, pts:2, type:'single',
+    text:'Es posible que un puesto de atencion derive un turno a una sucursal diferente? ¿Bajo qué condición?',
+    options:[
+      'No, sólo es posible derivar dentro de la misma sucursal',
+      'Sí, siempre es posible sin ninguna configuración especial',
+      'Sí, pero requiere que el perfil de puesto tenga habilitada la opcion \'Derivar a trámites de otra sucursal\'',
+      'Sólo es posible si ambas sucursales pertenecen a la misma región',
+    ], correct:[2] },
+
+  { n:31, pts:2, type:'single',
+    text:'¿Qué son los Subtrámites y para que los puede usar un ejecutivo durante la atencion?',
+    options:[
+      'Son trámites secundarios que el cliente puede solicitar desde el kiosco',
+      'Son etapas o variaciones de un trámite que el ejecutivo registra durante la atencion, como pasos completados o productos adquiridos',
+      'Son trámites de baja prioridad que se atienden cuando no hay otros turnos en espera',
+      'Son trámites que sólo puede ejecutar el administrador de sucursal',
+    ], correct:[1] },
+
+  { n:32, pts:2, type:'multi',
+    text:'Por qué canales puede un cliente obtener un turno de forma virtual sin pasar por el kiosco fisico?',
+    options:[
+      'Desde una API externa integrada con el sistema',
+      'Desde una pagina web (mobile o desktop)',
+      'Escaneando el codigo QR impreso en su ticket presencial anterior',
+      'Desde cualquier red social de la empresa',
+      'Llamando al call center de la sucursal',
+    ], correct:[0,1] },
+
+  { n:33, pts:4, type:'multi',
+    text:'Que información puede visualizar un cliente al dar seguimiento a su turno virtual?',
+    options:[
+      'El estado actual de su turno y cuántas personas hay por delante',
+      'El tiempo de espera estimado para su atencion',
+      'Si su cita fue asignada con prioridad',
+      'El nombre del ejecutivo que lo atendio',
+      'Si es el próximo en ser llamado (cuando es el único en espera)',
+    ], correct:[0,1,2,4] },
+
+  { n:34, pts:2, type:'single',
+    text:'¿Para qué sirve el código QR incluido en el ticket presencial impreso?',
+    options:[
+      'Para pagar el servicio de atencion en linea',
+      'Para que el cliente pueda hacer seguimiento de su turno a traves de la Fila Virtual sin necesidad de recordar su codigo',
+      'Para evaluar la calidad de atencion recibida',
+      'Para redirigir al cliente al sitio web de la empresa',
+    ], correct:[1] },
+
+  { n:35, pts:2, type:'single',
+    text:'¿Qué mensaje recibe un cliente cuando es el unico en espera para ser atendido en la Fila Virtual?',
+    options:[
+      'Se le muestra el tiempo exacto en minutos que falta para su atencion',
+      'No se le muestra ningun tiempo estimado; en cambio se le indica que sera el proximo en ser llamado',
+      'Se le informa que la sucursal esta sin capacidad disponible',
+      'Se le solicita que confirme su asistencia a traves de un mensaje SMS',
+    ], correct:[1] },
+
+  { n:36, pts:2, type:'single',
+    text:'¿Qué es la \'tolerancia de ingreso\' en una agenda de citas y que controla exactamente?',
+    options:[
+      'El número maximo de citas que pueden agendarse por dia',
+      'Los minutos de diferencia con los que un cliente puede ingresar respecto al horario de su cita, y el tiempo que tiene para confirmarla',
+      'El tiempo minimo de anticipación con el que debe sacarse una cita',
+      'El tiempo maximo que el ejecutivo puede demorar en atender al cliente con cita',
+    ], correct:[1] },
+
+  { n:37, pts:5, type:'multi',
+    text:'¿Qué tipos de notificaciones automáticas puede recibir un cliente desde el módulo de citas?',
+    options:[
+      'Confirmación de la cita agendada',
+      'Recordatorio previo a la cita',
+      'notificación de cancelación de la cita',
+      'notificación por ausencia (cliente no se presento)',
+      'notificación ante cancelaciones masivas que afecten su cita',
+    ], correct:[0,1,2,3,4] },
+
+  { n:38, pts:4, type:'multi',
+    text:'Que canales estan disponibles para enviar notificaciones del modulo de citas a los clientes?',
+    options:[
+      'Email',
+      'SMS',
+      'WhatsApp',
+      'API (canal personalizado)',
+      'notificación push a la app nativa de Numia',
+    ], correct:[0,1,2,3] },
+
+  { n:39, pts:2, type:'single',
+    text:'Que ocurre cuando se activa la opcion \'Acepta terminos y condiciones\' en un trámite?',
+    options:[
+      'Se solicita al cliente aceptar los terminos y condiciones al momento de obtener una cita para ese trámite',
+      'Se solicita aceptacion al momento de llegar a la sucursal, antes de imprimir el ticket',
+      'Aplica a todos los trámites de la compañía de forma automática',
+      'Sólo aplica cuando el cliente saca turno desde el kiosco fisico',
+    ], correct:[0] },
+
+  { n:40, pts:2, type:'single',
+    text:'Es posible que la plataforma solicite o permita al cliente subir archivos al momento de agendar una cita?',
+    options:[
+      'No, la carga de archivos no es una funcionalidad disponible en el agendamiento',
+      'Sí, y esos archivos pueden ser visualizados desde el puesto de atencion y en el calendario de citas',
+      'Sí, pero sólo el cliente puede verlos; el ejecutivo no tiene acceso a ellos',
+      'Sólo es posible sí se desarrolla una integracion personalizada con un tercero',
+    ], correct:[1] },
+
+  { n:41, pts:2, type:'single',
+    text:'Como puede habilitarse la atencion por videollamada desde un kiosco fisico?',
+    options:[
+      'No es posible, la videollamada sólo funciona desde dispositivos moviles',
+      'Activando la opcion \'Habilitar sala de atencion virtual\' en la configuración del kiosco y asignando el box que realizara la atencion',
+      'El kiosco detecta automaticamente sí el trámite es virtual y lo habilita sin configuración adicional',
+      'Sólo es posible sí el kiosco tiene una camara integrada certificada por Numia',
+    ], correct:[1] },
+
+  { n:42, pts:2, type:'single',
+    text:'Que sucede sí un trámite esta configurado para atenderse por videollamada, pero el perfil del puesto de atencion tiene activada la opcion \'Deshabilitar videollamadas para puestos fisicos\'?',
+    options:[
+      'El turno no puede ser atendido hasta que se corrija la configuración',
+      'La atencion se realiza de forma presencial/fisica en lugar de por videollamada',
+      'El sistema deriva automaticamente el turno a otro puesto con videollamada habilitada',
+      'El cliente recibe una notificación indicando que la videollamada no esta disponible',
+    ], correct:[1] },
+
+  { n:43, pts:2, type:'single',
+    text:'Es posible descargar la grabacion de una videollamada? Desde donde se accede a ese recurso?',
+    options:[
+      'No, las videollamadas no quedan grabadas por politicas de privacidad',
+      'Sí, pero sólo el cliente puede descargarla desde su email',
+      'Sí, el link de descarga de la grabacion (y de los archivos compartidos) esta disponible en la seccion de Movimientos del sistema',
+      'Sí, pero requiere solicitud formal al equipo de soporte de Numia',
+    ], correct:[2] },
+
+  { n:44, pts:2, type:'single',
+    text:'La grabacion de videollamada aplica únicamente a atenciones virtuales o tambien a atenciones presenciales realizadas por video?',
+    options:[
+      'Sólo aplica a atenciones virtuales (turno desde mobile o fila virtual)',
+      'Sólo aplica a atenciones presenciales cuando el cliente esta en la sucursal',
+      'Aplica tanto a atenciones virtuales como presenciales realizadas por videollamada',
+      'La grabacion no esta disponible en ninguna modalidad de forma nativa',
+    ], correct:[2] },
+
+  { n:45, pts:3, type:'multi',
+    text:'Cuáles de las siguientes son funcionalidades disponibles en el modulo de videollamada de Numia?',
+    options:[
+      'Compartir documentos / archivos durante la llamada',
+      'Grabar la sesion de videollamada',
+      'Chat en vivo (mensajería de texto durante la llamada)',
+      'Añadir nuevos participantes a la videollamada en curso',
+      'Cobrowsing (navegacion compartida entre ejecutivo y cliente)',
+    ], correct:[0,1] },
+
+  { n:46, pts:5, type:'multi',
+    text:'Cuáles de los siguientes eventos pueden disparar el envio automático de un mensaje al cliente en el modulo de mensajería?',
+    options:[
+      'Llamado del turno',
+      'Turno finalizado',
+      'derivación del turno',
+      'cancelación masiva de turnos',
+      'Turno en espera (nuevo ingreso)',
+    ], correct:[0,1,2,3,4] },
+
+  { n:47, pts:2, type:'multi',
+    text:'Por qué canales puede enviarse mensajería al cliente desde el modulo de mensajería de Numia?',
+    options:[
+      'Email',
+      'SMS',
+      'WhatsApp (nativo)',
+      'notificación push en app movil',
+    ], correct:[0,1] },
+
+  { n:48, pts:2, type:'single',
+    text:'Es posible configurar mensajes distintos segun el trámite del turno, o los mensajes aplican de forma generica para todos?',
+    options:[
+      'Los mensajes son siempre genericos y aplican a todos los trámites sin excepcion',
+      'Sí, al crear un mensaje se puede indicar a que trámites aplica; solo los turnos de esos trámites recibiran la comunicacion',
+      'Sólo es posible diferenciar mensajes por sucursal, no por trámite',
+      'Se puede diferenciar por trámite pero sólo sí se usa el canal Email, no SMS',
+    ], correct:[1] },
+
+  { n:49, pts:2, type:'single',
+    text:'Como puede un cliente dar seguimiento a su turno a traves de la mensajería recibida?',
+    options:[
+      'No es posible el seguimiento desde la mensajería, solo desde el kiosco',
+      'A traves de un link de seguimiento incluido en el SMS o email, que lo lleva a la pantalla de estado del turno',
+      'Respondiendo al SMS recibido con su número de turno',
+      'Sólo desde la app movil oficial de Numia',
+    ], correct:[1] },
+
+  { n:50, pts:2, type:'single',
+    text:'Una pantalla de turnero en una sucursal, cuántos turneros puede mostrar simultaneamente como maximo?',
+    options:[
+      'Sólo 1 turnero por pantalla, para no generar confusion visual al cliente',
+      '2 turneros: uno para citas y otro para turnos espontaneos',
+      'Hasta 4 turneros simultaneos, cada uno configurable con trámites especificos',
+      'Ilimitados, la cantidad depende únicamente de la resolucion de la pantalla',
+      '3 turneros, uno por cada sala de espera disponible en la sucursal',
+    ], correct:[2] },
+
+  { n:51, pts:2, type:'single',
+    text:'Que permite la funcion \'Publicidad segun tipo de cliente\' en las pantallas de la sucursal?',
+    options:[
+      'Mostrar publicidad personalizada en el telefono de cada cliente cuando ingresa a la sucursal via Bluetooth',
+      'Cambiar automaticamente el contenido en pantalla cuando el porcentaje de clientes de cierto tipo en la sucursal supera un umbral definido',
+      'Deshabilitar toda publicidad cuando hay clientes VIP en espera para no distraerlos',
+      'Mostrar el nombre del cliente en la pantalla cuando su turno es llamado',
+      'Enviar publicidad por SMS al cliente segun su tipo mientras espera en la sucursal',
+    ], correct:[1] },
+];
+
+function loadAnswersFromStorage() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data) || data.length !== questions.length) return null;
+    return data.map((arr) => {
+      if (!Array.isArray(arr)) return new Set();
+      return new Set(arr);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+function scoreExam(userSets) {
+  let totalScore = 0, nCorrect = 0, nIncorrect = 0, nPartial = 0;
+  const results = questions.map((q, qi) => {
+    const userSet = userSets[qi];
+    const correctSet = new Set(q.correct);
+    const uArr = [...userSet].sort((a, b) => a - b);
+    const cArr = [...correctSet].sort((a, b) => a - b);
+    const isExact = uArr.length === cArr.length && uArr.every((v, i) => v === cArr[i]);
+    let status, pts = 0;
+    if (q.type === 'single') {
+      if (isExact) { status = 'correct'; pts = q.pts; nCorrect++; }
+      else { status = 'incorrect'; nIncorrect++; }
+    } else {
+      if (isExact) { status = 'correct'; pts = q.pts; nCorrect++; }
+      else {
+        const hits = [...userSet].filter((i) => correctSet.has(i)).length;
+        const wrongs = [...userSet].filter((i) => !correctSet.has(i)).length;
+        const net = Math.max(0, hits - wrongs);
+        if (net > 0) { status = 'partial'; pts = Math.round(q.pts * net / cArr.length); nPartial++; }
+        else { status = 'incorrect'; nIncorrect++; }
+      }
+    }
+    totalScore += pts;
+    return { q, status, pts, userSet, correctSet };
+  });
+  const maxPoints = questions.reduce((s, q) => s + q.pts, 0);
+  return { totalScore, nCorrect, nIncorrect, nPartial, results, maxPoints, passed: totalScore >= Math.ceil(maxPoints * 0.75) };
+}
+
+let lastPdfContext = { totalScore: 0, maxPoints: 100, passed: false, nCorrect: 0, nTotal: 0, email: '', nombre: '', apellido: '', cel: '' };
+
+function buildPdf() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+
+  const C = {
+    black: [6, 10, 39],
+    purple: [134, 61, 255],
+    purpleDark: [90, 40, 200],
+    turquoise: [123, 225, 201],
+    grey: [100, 100, 118],
+    muted: [130, 128, 145],
+    white: [255, 255, 255],
+    paper: [244, 244, 250],
+    line: [225, 223, 235],
+    failFill: [252, 228, 228],
+    failText: [90, 28, 28],
+    okFill: [210, 248, 238],
+    okText: [12, 72, 58],
+  };
+
+  const passed = !!lastPdfContext.passed;
+  const nc = lastPdfContext.nCorrect != null ? lastPdfContext.nCorrect : 0;
+  const nt = lastPdfContext.nTotal != null ? lastPdfContext.nTotal : 0;
+  const nombreCompleto = [lastPdfContext.nombre, lastPdfContext.apellido].filter(Boolean).join(' ').trim() || '—';
+
+  doc.setFillColor.apply(doc, C.paper);
+  doc.rect(0, 0, pageW, pageH, 'F');
+
+  doc.setFillColor.apply(doc, C.black);
+  doc.rect(0, 0, pageW, 34, 'F');
+  doc.setFillColor.apply(doc, C.purple);
+  doc.rect(0, 34, pageW, 2.2, 'F');
+
+  doc.setTextColor.apply(doc, C.white);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(17);
+  doc.text('Certificación Numia Manager', pageW / 2, 16, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(188, 186, 220);
+  doc.text('Comprobante de evaluación', pageW / 2, 26, { align: 'center' });
+
+  const mx = 18;
+  const cw = pageW - mx * 2;
+  const cardY = 46;
+  const cardH = 102;
+
+  doc.setDrawColor.apply(doc, C.line);
+  doc.setLineWidth(0.35);
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(mx, cardY, cw, cardH, 4, 4, 'FD');
+
+  const ix = mx + 11;
+  let cy = cardY + 14;
+
+  doc.setTextColor.apply(doc, C.muted);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.text('PARTICIPANTE', ix, cy);
+  cy += 6;
+  doc.setTextColor.apply(doc, C.black);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.splitTextToSize(nombreCompleto, cw - 22).forEach(function (line) {
+    doc.text(line, ix, cy);
+    cy += 6.5;
+  });
+  cy += 6;
+
+  doc.setDrawColor.apply(doc, C.line);
+  doc.setLineWidth(0.2);
+  doc.line(ix, cy, mx + cw - 11, cy);
+  cy += 10;
+
+  doc.setTextColor.apply(doc, C.muted);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.text('CALIFICACIÓN (ACERTADAS / TOTAL)', ix, cy);
+  cy += 12;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(36);
+  doc.setTextColor.apply(doc, C.purple);
+  doc.text(nc + '/' + nt, ix, cy);
+  cy += 14;
+
+  doc.setDrawColor.apply(doc, C.purple);
+  doc.setLineWidth(0.6);
+  doc.line(ix, cy, ix + 42, cy);
+  cy += 12;
+
+  doc.setTextColor.apply(doc, C.muted);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.text('ESTADO', ix, cy);
+  cy += 7;
+  const estadoTxt = passed ? 'Aprobado' : 'No aprobado';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  const tw = doc.getTextWidth(estadoTxt);
+  const pillW = tw + 14;
+  const pillH = 9;
+  const pillX = mx + (cw - pillW) / 2;
+  if (passed) {
+    doc.setFillColor.apply(doc, C.okFill);
+    doc.setDrawColor(100, 210, 185);
+  } else {
+    doc.setFillColor.apply(doc, C.failFill);
+    doc.setDrawColor(230, 160, 160);
+  }
+  doc.setLineWidth(0.25);
+  doc.roundedRect(pillX, cy - 5.2, pillW, pillH, 2.2, 2.2, 'FD');
+  doc.setTextColor.apply(doc, passed ? C.okText : C.failText);
+  doc.text(estadoTxt, pillX + pillW / 2, cy + 1.2, { align: 'center' });
+  cy += 18;
+
+  const d = new Date();
+  const fecha = d.toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor.apply(doc, C.grey);
+  doc.text('Documento generado el ' + fecha, pageW / 2, cardY + cardH - 8, { align: 'center' });
+
+  const fh = 13;
+  doc.setFillColor.apply(doc, C.black);
+  doc.rect(0, pageH - fh, pageW, fh, 'F');
+  doc.setTextColor(150, 148, 168);
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Numia · Certificación Partners · Información confidencial', pageW / 2, pageH - fh / 2 + 1.2, { align: 'center' });
+
+  doc.save('resultado-certificacion-numia-manager.pdf');
+}
+
+function render(resultsState) {
+  const { totalScore, passed, maxPoints, nCorrect } = resultsState;
+  const maxP = maxPoints != null ? maxPoints : 100;
+  const nTotal = questions.length;
+  const gradeEl = document.getElementById('res-grade');
+  if (gradeEl) gradeEl.textContent = nCorrect + '/' + nTotal;
+  const badge = document.getElementById('res-badge');
+  badge.textContent = passed ? 'Aprobado' : 'No aprobado';
+  badge.className = 'results-badge ' + (passed ? 'badge-aprobado' : 'badge-reprobado');
+
+  lastPdfContext = {
+    totalScore, maxPoints: maxP, passed, nCorrect, nTotal,
+    email: lastPdfContext.email, nombre: lastPdfContext.nombre, apellido: lastPdfContext.apellido, cel: lastPdfContext.cel,
+  };
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function init() {
+  const userSets = loadAnswersFromStorage();
+  const partner = readPartnerProfileFromStorage();
+  if (!userSets) {
+    document.getElementById('err-screen').style.display = 'block';
+    return;
+  }
+  if (!isPartnerProfileComplete(partner)) {
+    document.getElementById('err-screen').querySelector('p').textContent =
+      'Faltan datos del partner. Vuelve al examen, completa correo, nombre, apellido y celular empresarial, y envía de nuevo la evaluación.';
+    document.getElementById('err-screen').style.display = 'block';
+    return;
+  }
+  const state = scoreExam(userSets);
+  document.getElementById('results-wrap').style.display = 'block';
+  document.getElementById('res-partner-block').style.display = 'block';
+  document.getElementById('res-partner-name').textContent = [partner.nombre, partner.apellido].filter(Boolean).join(' ').trim() || '—';
+  lastPdfContext.email = partner.email;
+  lastPdfContext.nombre = partner.nombre;
+  lastPdfContext.apellido = partner.apellido;
+  lastPdfContext.cel = partner.cel;
+  render(state);
+
+  const apiLine = document.getElementById('res-api-line');
+  registerResultInNocodb(partner, state.totalScore)
+    .then(function () {
+      apiLine.className = 'res-api-line ok';
+      apiLine.textContent = 'Resultado registrado correctamente';
+    })
+    .catch(function (err) {
+      apiLine.className = 'res-api-line warn';
+      var m = (err && err.message) ? err.message : 'Error de red, CORS o autenticación';
+      if (m.length > 200) m = m.slice(0, 200) + '…';
+      apiLine.textContent = 'No se pudo registrar en el servidor. ' + m;
+    });
+
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    buildPdf();
+  });
+}
+
+init();
+</script>
+</body>
+</html>

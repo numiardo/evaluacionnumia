@@ -1,0 +1,20 @@
+# Sitio estático — Certificación Numia Manager
+# Documentación: https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  # Directorio que Netlify publica tal cual (HTML, img, etc.)
+  # No hace falta "command": no hay paso de build (sitio estático).
+  publish = "."
+
+# La raíz del sitio muestra el examen (evita depender de un index.html duplicado)
+[[redirects]]
+  from = "/"
+  to = "/certificacion-numia-manager.html"
+  status = 200
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
