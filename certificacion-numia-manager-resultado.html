@@ -7,6 +7,7 @@
 <link rel="icon" href="img/N.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   :root {
     --black: #060A27;
@@ -82,6 +83,7 @@
     <div class="results-actions-bar">
       <button class="btn-pdf" type="button" id="btn-pdf" aria-describedby="download-reminder">Descargar PDF</button>
     </div>
+    <p class="res-api-line" id="res-email-line" role="status" style="text-align:center;margin-top:14px;min-height:1.2em;"></p>
   </div>
   <footer><img src="img/numia.png" alt="Numia" class="footer-brand-logo" width="90" height="28" decoding="async" /><span>· Certificación Partners · Información confidencial, todos los derechos reservados</span></footer>
 </div>
@@ -91,6 +93,10 @@
 const STORAGE_KEY = 'numiaManagerExamAnswers';
 const PARTNER_PROFILE_KEY = 'numiaManagerPartnerProfile';
 const INTRO_STORAGE_KEY = 'numiaManagerExamIntroDone';
+const EMAILJS_SUMMARY_SENT_KEY = 'numiaManagerEmailjsSummarySent';
+const EMAILJS_PUBLIC_KEY = '5Lz-8VtW2hX3KkVfU';
+const EMAILJS_SERVICE_ID = 'service_jj9mssf';
+const EMAILJS_TEMPLATE_ID = 'hn7kog8';
 const NOCO_API_URL = 'https://app.nocodb.com/api/v2/tables/m08wmi55gby9ioi/records';
 const NOCO_XC_TOKEN = 'esMWeT85CmXjEnt5kvF1J97zD-d4_BX9rq228I9z';
 
@@ -553,6 +559,57 @@ function scoreExam(userSets) {
 
 let lastPdfContext = { totalScore: 0, maxPoints: 100, passed: false, nCorrect: 0, nTotal: 0, email: '', nombre: '', apellido: '', cel: '' };
 
+if (typeof emailjs !== 'undefined') {
+  try {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  } catch (e) { /* */ }
+}
+
+function sendResultSummaryEmail() {
+  const line = document.getElementById('res-email-line');
+  if (typeof emailjs === 'undefined') {
+    if (line) {
+      line.className = 'res-api-line warn';
+      line.textContent = 'No se pudo cargar EmailJS; el PDF se descargó igualmente.';
+    }
+    return Promise.resolve();
+  }
+  if (sessionStorage.getItem(EMAILJS_SUMMARY_SENT_KEY) === '1') {
+    if (line) {
+      line.className = 'res-api-line ok';
+      line.textContent = 'El resumen por correo ya se envió en este intento.';
+    }
+    return Promise.resolve();
+  }
+  const ctx = lastPdfContext;
+  const partnerName = [ctx.nombre, ctx.apellido].filter(Boolean).join(' ').trim() || '—';
+  const templateParams = {
+    partner_name: partnerName,
+    partner_company: 'No indicada',
+    score: String(ctx.nCorrect) + '/' + String(ctx.nTotal),
+    result_label: ctx.passed ? 'Aprobado' : 'No aprobado',
+  };
+  return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(function () {
+      try {
+        sessionStorage.setItem(EMAILJS_SUMMARY_SENT_KEY, '1');
+      } catch (e) { /* */ }
+      if (line) {
+        line.className = 'res-api-line ok';
+        line.textContent = 'Se envió un correo con el resumen de tu resultado.';
+      }
+    })
+    .catch(function (err) {
+      var m = (err && err.text) ? err.text : (err && err.message) ? err.message : 'Error al enviar';
+      if (typeof m !== 'string') m = 'Error al enviar el correo';
+      if (m.length > 160) m = m.slice(0, 160) + '…';
+      if (line) {
+        line.className = 'res-api-line warn';
+        line.textContent = 'No se pudo enviar el correo: ' + m + ' Podés intentar de nuevo descargando el PDF otra vez.';
+      }
+    });
+}
+
 function buildPdf() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -686,6 +743,7 @@ function buildPdf() {
   doc.text('Numia · Certificación Partners · Información confidencial', pageW / 2, pageH - fh / 2 + 1.2, { align: 'center' });
 
   doc.save('resultado-certificacion-numia-manager.pdf');
+  sendResultSummaryEmail();
 }
 
 function render(resultsState) {

@@ -925,6 +925,7 @@ const ANSWER_STORAGE_KEY = 'numiaManagerExamAnswers';
 const EMAIL_STORAGE_KEY = 'numiaManagerExamEmail';
 const PARTNER_PROFILE_KEY = 'numiaManagerPartnerProfile';
 const INTRO_STORAGE_KEY = 'numiaManagerExamIntroDone';
+const EMAILJS_SUMMARY_SENT_KEY = 'numiaManagerEmailjsSummarySent';
 
 const EXAM_TIMER_SEC = 30 * 60;
 let examTimerRemaining = EXAM_TIMER_SEC;
@@ -1329,6 +1330,9 @@ function submitExam(skipUnansweredConfirm){
   const payload = userAnswers.map(s => [...s].sort((a, b) => a - b));
   try {
     sessionStorage.setItem(ANSWER_STORAGE_KEY, JSON.stringify(payload));
+    try {
+      sessionStorage.removeItem(EMAILJS_SUMMARY_SENT_KEY);
+    } catch (e2) { /* */ }
   } catch (e) {
     alert('No se pudo guardar el intento. Revisa que el almacenamiento del navegador esté habilitado.');
     if (skipUnansweredConfirm) {
