@@ -96,7 +96,6 @@ const INTRO_STORAGE_KEY = 'numiaManagerExamIntroDone';
 const EMAILJS_SUMMARY_SENT_KEY = 'numiaManagerEmailjsSummarySent';
 const EMAILJS_PUBLIC_KEY = '5Lz-8VtW2hX3KkVfU';
 const EMAILJS_SERVICE_ID = 'service_jj9mssf';
-const EMAILJS_TEMPLATE_ID = 'hn7kog8';
 const NOCO_API_URL = 'https://app.nocodb.com/api/v2/tables/m08wmi55gby9ioi/records';
 const NOCO_XC_TOKEN = 'esMWeT85CmXjEnt5kvF1J97zD-d4_BX9rq228I9z';
 
@@ -589,7 +588,7 @@ function sendResultSummaryEmail() {
     score: String(ctx.nCorrect) + '/' + String(ctx.nTotal),
     result_label: ctx.passed ? 'Aprobado' : 'No aprobado',
   };
-  return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+  return emailjs.send(EMAILJS_SERVICE_ID, 'hn7kog8', templateParams)
     .then(function () {
       try {
         sessionStorage.setItem(EMAILJS_SUMMARY_SENT_KEY, '1');
